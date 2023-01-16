@@ -1,0 +1,94 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --normal: #a8a77a;
+  --fire: #ee8130;
+  --water: #6390f0;
+  --electric: #f7d02c;
+  --grass: #7ac74c;
+  --ice: #96d9d6;
+  --fighting: #c22e28;
+  --poison: #a33ea1;
+  --ground: #e2bf65;
+  --flying: #a98ff3;
+  --psychic: #f95587;
+  --bug: #a6b91a;
+  --rock: #b6a136;
+  --ghost: #735797;
+  --dragon: #6f35fc;
+  --dark: #705746;
+  --steel: #b7b7ce;
+  --fairy: #d685ad;
+}
+
+.font-pokemon {
+  font-family: "Press Start 2P", cursive;
+}
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #4F4F4F;
+}
+.type.normal {
+  background-color: #a8a77a;
+}
+.type.fire {
+  background-color: #ee8130;
+}
+.type.water {
+  background-color: #6390f0;
+}
+.type.electric {
+  background-color: #f7d02c;
+}
+.type.grass {
+  background-color: #7ac74c;
+}
+.type.ice {
+  background-color: #96d9d6;
+}
+.type.fighting {
+  background-color: #c22e28;
+}
+.type.poison {
+  background-color: #a33ea1;
+}
+.type.ground {
+  background-color: #e2bf65;
+}
+.type.flying {
+  background-color: #a98ff3;
+}
+.type.psychic {
+  background-color: #f95587;
+}
+.type.bug {
+  background-color: #a6b91a;
+}
+.type.rock {
+  background-color: #b6a136;
+}
+.type.ghost {
+  background-color: #735797;
+}
+.type.dragon {
+  background-color: #6f35fc;
+}
+.type.dark {
+  background-color: #705746;
+}
+.type.steel {
+  background-color: #b7b7ce;
+}
+.type.fairy {
+  background-color: #d685ad;
+}
+.type.inactive {
+  opacity: 0.5;
+}

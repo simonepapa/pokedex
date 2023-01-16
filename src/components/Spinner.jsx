@@ -25,7 +25,7 @@ const Spin = styled.span`
   width: 48px;
   height: 48px;
   border: 5px solid #fff;
-  border-bottom-color: #ff3d00;
+  border-bottom-color: #d75050;
   border-radius: 50%;
   display: inline-block;
   box-sizing: border-box;
