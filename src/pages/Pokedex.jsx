@@ -59,7 +59,7 @@ const Grid = styled.div`
 
 function Pokedex() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const generations = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+  const generations = [1, 2, 3, 4, 5, 6, 7, 8]
 
   const {
     data: list = [],
