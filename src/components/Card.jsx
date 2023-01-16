@@ -1,7 +1,10 @@
+import { Link } from "react-router-dom"
 import styled from "styled-components"
 import Type from "./Type"
 
-const Container = styled.div`
+const Container = styled(Link)`
+  text-decoration: none;
+  color: #000;
   background: rgba(217, 217, 217, 0.5);
   border-radius: 8px;
   padding: 16px 8px;
@@ -28,6 +31,7 @@ const Grid = styled.div`
 
 const Sprite = styled.img`
   display: block;
+  max-width: 100%;
   width: auto;
   height: 182px;
   margin: 8px auto;
@@ -35,13 +39,22 @@ const Sprite = styled.img`
 
 function Card({ pokemon }) {
   return (
-    <Container>
-      <Number>N° {pokemon.id.toString().padStart(3, '0')}</Number>
-      <Sprite src={pokemon.sprites.other.dream_world.front_default} alt={`Dream World sprite of ${pokemon.name}`} />
-      <Name>{pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</Name>
+    <Container to={`${pokemon.id}`}>
+      <Number>N° {pokemon.id.toString().padStart(3, "0")}</Number>
+      <Sprite
+        src={
+          pokemon.sprites.other.dream_world.front_default !== null
+            ? pokemon.sprites.other.dream_world.front_default
+            : pokemon.sprites.other.home.front_default
+        }
+        alt={`Sprite of ${pokemon.name}`}
+      />
+      <Name>
+        {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
+      </Name>
       <Grid>
         {pokemon.types.map((type) => (
-          <Type type={type.type} />
+          <Type key={`${pokemon.id} + ${type.type.name}`} type={type.type} />
         ))}
       </Grid>
     </Container>

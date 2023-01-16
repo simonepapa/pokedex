@@ -9,26 +9,41 @@ export const apiSlice = createApi({
     }),
     getPokemonByGen: builder.query({
       async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
-        const list = await fetchWithBQ("generation/1")
+        let results = []
+        const list = await fetchWithBQ(`generation/${_arg}`)
         if (list.error)
           return {
             error: list.error,
           }
-        let results = []
         for await (const pokemon of list.data.pokemon_species) {
-          const result = await fetchWithBQ(`pokemon/${pokemon.name}`)
-          results = [...results, result.data];
+          const result = await fetchWithBQ(`pokemon/${pokemon.url.slice(42)}`)
+          results = [...results, result.data]
         }
-        //list.data.pokemon_species.map(async (e) => {
-        //  const pokemon = await fetchWithBQ(`pokemon/${e.name}`)
-        //  result = [...result, pokemon.data];
-        //})
-        //console.log(result)
         return { data: results }
       },
     }),
     getPokemonByName: builder.query({
       query: (name) => `pokemon/${name}`,
+    }),
+    getPokemonById: builder.query({
+      async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const pokemon = await fetchWithBQ(`pokemon/${_arg}`)
+        const pokemonSpecies = await fetchWithBQ(`pokemon-species/${_arg}`)
+        if (pokemon.error)
+          return {
+            error: pokemon.error,
+          }
+        if (pokemonSpecies.error)
+          return {
+            error: pokemonSpecies.error,
+          }
+        return {
+          data: {
+            pokemon: pokemon.data,
+            pokemonSpecies: pokemonSpecies.data,
+          },
+        }
+      },
     }),
   }),
 })
@@ -37,4 +52,5 @@ export const {
   useGetGenQuery,
   useGetPokemonByGenQuery,
   useGetPokemonByNameQuery,
+  useGetPokemonByIdQuery,
 } = apiSlice

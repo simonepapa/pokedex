@@ -1,11 +1,24 @@
+import { useMemo } from "react"
+import { useSearchParams } from "react-router-dom"
 import styled from "styled-components"
 import { toast } from "react-toastify"
 import Spinner from "../components/Spinner"
 import {
   useGetPokemonByGenQuery,
-  useGetPokemonByNameQuery,
 } from "../features/api/apiSlice"
 import Card from "../components/Card"
+
+const SpinnerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+`
 
 const Content = styled.main`
   max-width: 1200px;
@@ -15,6 +28,29 @@ const Content = styled.main`
   padding: 16px;
 `
 
+const Generations = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 16px auto 24px auto;
+`
+
+const Generation = styled.p`
+  font-size: 18px;
+  margin: 0 12px;
+  padding: 8px;
+  background-color: rgba(217, 217, 217, 0.5);
+  transition: background-color 0.1s linear;
+
+  &:hover:not(.active) {
+    background-color: rgba(217, 217, 217, 0.8);
+    cursor: pointer;
+  }
+
+  &.active {
+    font-weight: 700;
+  }
+`
+
 const Grid = styled.div`
   display: flex;
   justify-content: center;
@@ -22,28 +58,73 @@ const Grid = styled.div`
 `
 
 function Pokedex() {
-  const {
-    data: list,
-    isLoading: isLoadingList,
-    isSuccess: isSuccessList,
-    isError: isErrorList,
-    message: messageList,
-  } = useGetPokemonByGenQuery("1")
+  const [searchParams, setSearchParams] = useSearchParams()
+  const generations = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-  if (isLoadingList) {
-    return <Spinner />
-  } else if (isErrorList) {
-    toast.error(messageList)
-  } else if (isSuccessList) {
+  const {
+    data: list = [],
+    isLoading,
+    isSuccess,
+    isError,
+    isFetching,
+    message,
+    refetch,
+  } = useGetPokemonByGenQuery(
+    searchParams.get("gen") !== null ? searchParams.get("gen") : 1
+  )
+
+  const sortedPokemon = useMemo(() => {
+    const sortedPokemon = list.slice()
+    // Sort pokemon in ascending ID order
+    sortedPokemon.sort(function(a, b){return a.id-b.id});
+    return sortedPokemon
+  }, [list])
+
+  const refreshGen = (e) => {
+    setSearchParams({ gen: e.target.childNodes[0].nodeValue })
+    refetch()
+  }
+
+  if (isLoading) {
+    return (
+      <SpinnerContainer>
+        <Spinner />
+      </SpinnerContainer>
+    )
+  } else if (isError) {
+    toast.error(message)
+  } else if (isSuccess) {
     console.log(list)
   }
 
   return (
     <Content>
-      <Grid>
-        {list.map((pokemon) => (
-          <Card key={pokemon.id} pokemon={pokemon} />
+      <Generations>
+        {generations.map((generation) => (
+          <Generation
+            onClick={(e) => refreshGen(e)}
+            key={generation}
+            className={
+              (generation.toString() === searchParams.get("gen") ||
+                (generation === 1 &&
+                  searchParams.get("gen") === null)) &&
+              "active"
+            }
+          >
+            {generation}
+          </Generation>
         ))}
+      </Generations>
+      <Grid>
+        {!isFetching ? (
+          <>
+            {sortedPokemon.map((pokemon) => (
+              <Card key={pokemon.id} pokemon={pokemon} />
+            ))}
+          </>
+        ) : (
+          <Spinner />
+        )}
       </Grid>
     </Content>
   )

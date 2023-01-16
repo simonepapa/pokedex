@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css"
 import Navigation from "./components/Navigation"
 import Pokedex from "./pages/Pokedex"
 import Storage from "./pages/Storage"
+import Pokemon from "./pages/Pokemon"
 
 const Container = styled.div`
   max-width: 1200px;
@@ -26,6 +27,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate replace to="/pokedex" />} />
             <Route path="/pokedex" element={<Pokedex />} />
+            <Route path="/pokedex/:pokemon" element={<Pokemon />} />
             <Route path="/storage" element={<Storage />} />
           </Routes>
         </Container>
