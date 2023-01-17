@@ -27,7 +27,7 @@ const Grid = styled.div`
   flex-wrap: wrap;
 `
 
-function Evolution({ pokemon }) {
+function Evolution({ pokemon, currentLanguage }) {
   return (
     <Container>
       <SpriteContainer>
@@ -37,10 +37,17 @@ function Evolution({ pokemon }) {
               ? pokemon.sprites.other.dream_world.front_default
               : pokemon.sprites.other.home.front_default
           }
-          alt={`Sprite of ${pokemon.names[0].name}`}
+          title={`Sprite of ${
+            pokemon.names.find((e) => e.language.name === currentLanguage).name
+          }`}
+          alt={`Sprite of ${
+            pokemon.names.find((e) => e.language.name === currentLanguage).name
+          }`}
         />
       </SpriteContainer>
-      <Name>{pokemon.names[8].name}</Name>
+      <Name>
+        {pokemon.names.find((e) => e.language.name === currentLanguage).name}
+      </Name>
       <Grid>
         {pokemon.types.map((type) => (
           <Type key={`${pokemon.id} + ${type.type.name}`} type={type.type} />

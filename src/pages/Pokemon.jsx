@@ -1,7 +1,9 @@
-import { useMemo } from "react"
+import { useState, useMemo } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import { toast } from "react-toastify"
+import { countries } from "country-flag-icons"
+import { IT, FR, DE, ES, GB, JP, KR } from "country-flag-icons/react/3x2"
 import Spinner from "../components/Spinner"
 import { useGetPokemonByIdQuery } from "../features/api/apiSlice"
 import Type from "../components/Type"
@@ -33,6 +35,11 @@ const Info = styled.div`
   width: 95%;
   margin: 0 auto;
 `
+
+const LanguageSwitch = styled.div`
+  display: flex;
+`
+
 const Left = styled.div`
   display: flex;
   justify-content: center;
@@ -129,6 +136,8 @@ const Arrow = styled(BsArrowRight)`
 `
 
 function Pokemon() {
+  const [currentLanguage, setCurrentLanguage] = useState("en")
+
   const params = useParams()
 
   const {
@@ -168,13 +177,58 @@ function Pokemon() {
                     ? pokemon.pokemon.sprites.other.dream_world.front_default
                     : pokemon.pokemon.sprites.other.home.front_default
                 }
-                alt={`Sprite of ${pokemon.pokemon.name}`}
+                title={`Sprite of ${
+                  pokemon.pokemonSpecies.names.find((e) => e.language.name === currentLanguage).name
+                }`}
+                alt={`Sprite of ${
+                  pokemon.pokemonSpecies.names.find((e) => e.language.name === currentLanguage).name
+                }`}
               />
             </Left>
             <Right>
+              <LanguageSwitch>
+                <GB
+                  title="English"
+                  onClick={() => setCurrentLanguage("en")}
+                  className={`flag ${currentLanguage === "en" && "active"}`}
+                />
+                <JP
+                  title="Japanese"
+                  onClick={() => setCurrentLanguage("ja")}
+                  className={`flag ${currentLanguage === "ja" && "active"}`}
+                />
+                <IT
+                  title="Italian"
+                  onClick={() => setCurrentLanguage("it")}
+                  className={`flag ${currentLanguage === "it" && "active"}`}
+                />
+                <KR
+                  title="Korean"
+                  onClick={() => setCurrentLanguage("ko")}
+                  className={`flag ${currentLanguage === "ko" && "active"}`}
+                />
+                <FR
+                  title="French"
+                  onClick={() => setCurrentLanguage("fr")}
+                  className={`flag ${currentLanguage === "fr" && "active"}`}
+                />
+                <DE
+                  title="German"
+                  onClick={() => setCurrentLanguage("de")}
+                  className={`flag ${currentLanguage === "de" && "active"}`}
+                />
+                <ES
+                  title="Spanish"
+                  onClick={() => setCurrentLanguage("es")}
+                  className={`flag ${currentLanguage === "es" && "active"}`}
+                />
+              </LanguageSwitch>
               <h1>
-                {pokemon.pokemon.name.charAt(0).toUpperCase() +
-                  pokemon.pokemon.name.slice(1)}
+                {
+                  pokemon.pokemonSpecies.names.find(
+                    (e) => e.language.name === currentLanguage
+                  ).name
+                }
                 , N° {pokemon.pokemon.id.toString().padStart(3, "0")}
               </h1>
               <h3>
@@ -189,7 +243,7 @@ function Pokemon() {
               <Description>
                 {
                   pokemon.pokemonSpecies.flavor_text_entries.find(
-                    (e) => e.language.name === "en"
+                    (e) => e.language.name === currentLanguage
                   ).flavor_text
                 }
               </Description>
@@ -262,18 +316,20 @@ function Pokemon() {
             <Bottom>
               <SecondaryTitle>Evolution Chain</SecondaryTitle>
               {pokemon.evolutionChain.map((evolution, index) => (
-                <EvolutionRow key={`Evolution ${evolution.names[0].name}-${index}`}>
-                  <Evolution pokemon={evolution} />
+                <EvolutionRow
+                  key={`Evolution ${evolution.names[0].name}-${index}`}
+                >
+                  <Evolution pokemon={evolution} currentLanguage={currentLanguage} />
                   {Object.keys(evolution.secondStage).length !== 0 && (
                     <>
                       <Arrow />
-                      <Evolution pokemon={evolution.secondStage} />
+                      <Evolution pokemon={evolution.secondStage} currentLanguage={currentLanguage} />
                     </>
                   )}
                   {Object.keys(evolution.thirdStage).length !== 0 && (
                     <>
                       <Arrow />
-                      <Evolution pokemon={evolution.thirdStage} />
+                      <Evolution pokemon={evolution.thirdStage} currentLanguage={currentLanguage} />
                     </>
                   )}
                 </EvolutionRow>

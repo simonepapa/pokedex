@@ -33,7 +33,7 @@ body {
 }
 body {
   font-family: "Roboto", sans-serif;
-  background-color: #4F4F4F;
+  background-color: #4f4f4f;
 }
 .type.normal {
   background-color: #a8a77a;
@@ -91,4 +91,17 @@ body {
 }
 .type.inactive {
   opacity: 0.5;
+}
+.flag {
+  width: 48px;
+  height: 48px;
+  margin-right: 8px;
+  transition: opacity 0.1s linear;
+}
+.flag:not(.active) {
+  opacity: 0.5;
+}
+.flag:hover:not(.active) {
+  cursor: pointer;
+  opacity: 0.75;
 }
