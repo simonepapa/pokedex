@@ -5,6 +5,8 @@ import { toast } from "react-toastify"
 import Spinner from "../components/Spinner"
 import { useGetPokemonByIdQuery } from "../features/api/apiSlice"
 import Type from "../components/Type"
+import Evolution from "../components/Evolution"
+import { BsArrowRight } from "react-icons/bs"
 
 const SpinnerContainer = styled.div`
   display: flex;
@@ -113,6 +115,17 @@ const SingleStat = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 32px 0 0;
+`
+
+const EvolutionRow = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const Arrow = styled(BsArrowRight)`
+  width: 32px;
+  height: auto;
 `
 
 function Pokemon() {
@@ -234,7 +247,7 @@ function Pokemon() {
             <Grid>
               {pokemon.pokemon.stats.map((stat) => {
                 return (
-                  <SingleStat>
+                  <SingleStat key={stat.stat.name}>
                     <StatName>
                       {stat.stat.name.charAt(0).toUpperCase() +
                         stat.stat.name.slice(1)}
@@ -245,6 +258,28 @@ function Pokemon() {
               })}
             </Grid>
           </Bottom>
+          {pokemon.evolutionChain.length > 0 && (
+            <Bottom>
+              <SecondaryTitle>Evolution Chain</SecondaryTitle>
+              {pokemon.evolutionChain.map((evolution, index) => (
+                <EvolutionRow key={`Evolution ${evolution.names[0].name}-${index}`}>
+                  <Evolution pokemon={evolution} />
+                  {Object.keys(evolution.secondStage).length !== 0 && (
+                    <>
+                      <Arrow />
+                      <Evolution pokemon={evolution.secondStage} />
+                    </>
+                  )}
+                  {Object.keys(evolution.thirdStage).length !== 0 && (
+                    <>
+                      <Arrow />
+                      <Evolution pokemon={evolution.thirdStage} />
+                    </>
+                  )}
+                </EvolutionRow>
+              ))}
+            </Bottom>
+          )}
         </>
       ) : (
         <Spinner />
