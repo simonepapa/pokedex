@@ -9,6 +9,7 @@ import { useGetPokemonByIdQuery } from "../features/api/apiSlice"
 import Type from "../components/Type"
 import Evolution from "../components/Evolution"
 import { BsArrowRight } from "react-icons/bs"
+import { GiTrade } from "react-icons/gi"
 
 const SpinnerContainer = styled.div`
   display: flex;
@@ -130,9 +131,43 @@ const EvolutionRow = styled.div`
   align-items: center;
 `
 
+const EvolutionDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
 const Arrow = styled(BsArrowRight)`
   width: 32px;
   height: auto;
+`
+
+const Shed = styled.p`
+  margin: 0;
+  max-width: 200px;
+  text-align: center;
+`
+
+const Alcremie = styled.ul`
+  max-width: 300px;
+`
+
+const EvolutionBG = styled.div`
+  margin: 0;
+  border-radius: 8px;
+  background-color: #ababab;
+  padding: 2px 4px;
+  margin-bottom: 4px;
+
+  p {
+    margin: 0;
+  }
+
+  &.use {
+    display: flex;
+    align-items: center;
+  }
 `
 
 function Pokemon() {
@@ -149,6 +184,372 @@ function Pokemon() {
     message,
     refetch,
   } = useGetPokemonByIdQuery(params.pokemon)
+
+  const evolutionType = (details) => {
+    let output = []
+    for (let i = 0; i < details.evolution_details.details.length; i++) {
+      switch (details.evolution_details.details[i].trigger.name) {
+        case "level-up":
+          let containers = []
+          containers.push(
+            <p key={`Level up 0`}>
+              <strong>Level up</strong>
+            </p>
+          )
+          for (const prop in details.evolution_details.details[i]) {
+            if (prop !== "trigger") {
+              if (
+                details.evolution_details.details[i][prop] !== null &&
+                details.evolution_details.details[i][prop] !== false &&
+                details.evolution_details.details[i][prop] !== ""
+              ) {
+                switch (prop) {
+                  case "location":
+                    containers.push(
+                      <p key={`Location ${i}`}>
+                        in{" "}
+                        {`${details.evolution_details.details[i][
+                          prop
+                        ].name.replace(/-/g, " ")}`}
+                      </p>
+                    )
+                    break
+                  case "known_move":
+                    containers.push(
+                      <p key={`Known move ${i}`}>
+                        knowing{" "}
+                        {`${details.evolution_details.details[i][
+                          prop
+                        ].name.replace(/-/g, " ")}`}
+                      </p>
+                    )
+                    break
+                  case "known_move_type":
+                    containers.push(
+                      <p key={`Known move type ${i}`}>
+                        knowing{" "}
+                        {`${details.evolution_details.details[i][
+                          prop
+                        ].name.replace(/-/g, " ")}`}{" "}
+                        type move
+                      </p>
+                    )
+                    break
+                  case "gender":
+                    containers.push(
+                      <p key={`Gender ${i}`}>
+                        gender{" "}
+                        {`${
+                          details.evolution_details.details[i][prop] === 1
+                            ? "female"
+                            : "male"
+                        }`}
+                      </p>
+                    )
+                    break
+                  case "min_affection":
+                    containers.push(
+                      <p key={`Min affection ${i}`}>
+                        with min affection{" "}
+                        {`${details.evolution_details.details[i][prop]}`}
+                      </p>
+                    )
+                    break
+                  case "min_beauty":
+                    containers.push(
+                      <p key={`Min beauty ${i}`}>
+                        with min beauty{" "}
+                        {`${details.evolution_details.details[i][prop]}`}
+                      </p>
+                    )
+                    break
+                  case "min_happiness":
+                    containers.push(
+                      <p key={`Min happiness ${i}`}>
+                        with min happiness{" "}
+                        {`${details.evolution_details.details[i][prop]}`}
+                      </p>
+                    )
+                    break
+                  case "needs_overworld_rain":
+                    containers.push(
+                      <p key={`Needs overworld rain ${i}`}>
+                        needs overworld rain
+                      </p>
+                    )
+                    break
+                  case "party_species":
+                    containers.push(
+                      <p key={`Party species ${i}`}>
+                        with{" "}
+                        <strong>{`${details.evolution_details.details[i][prop].name}`}</strong>{" "}
+                        in party
+                      </p>
+                    )
+                    break
+                  case "party_type":
+                    containers.push(
+                      <p key={`Party type ${i}`}>
+                        with a{" "}
+                        <strong>{`${details.evolution_details.details[i][prop].name}`}</strong>{" "}
+                        pokémon type in party
+                      </p>
+                    )
+                    break
+                  case "trade_species":
+                    containers.push(
+                      <p key={`Trade species ${i}`}>
+                        trade for a{" "}
+                        <strong>{`${details.evolution_details.details[i][prop].name}`}</strong>
+                      </p>
+                    )
+                    break
+                  case "relative_physical_stats":
+                    containers.push(
+                      <p key={`Relative physical stats ${i}`}>
+                        with
+                        <strong>
+                          {`${
+                            details.evolution_details.details[i][prop] === 1
+                              ? " Attack > Defense"
+                              : details.evolution_details.details[i][prop] === 0
+                              ? " Attack = Defense"
+                              : " Attack < Defense"
+                          }`}
+                        </strong>
+                      </p>
+                    )
+                    break
+                  case "time_of_day":
+                    containers.push(
+                      <p key={`Time of day ${i}`}>
+                        during the{" "}
+                        <strong>{`${details.evolution_details.details[i][prop]}`}</strong>
+                      </p>
+                    )
+                    break
+                  case "turn_upside_down":
+                    containers.push(
+                      <p key={`Needs overworld rain ${i}`}>
+                        while the game system is held upside-down
+                      </p>
+                    )
+                    break
+                  default:
+                    containers.push(
+                      <p key={`Level up ${i+1}`}>
+                        {`${prop.replace(/_/g, " ")}`}:{" "}
+                        {`${details.evolution_details.details[i][prop]}`}
+                      </p>
+                    )
+                    break
+                }
+              }
+            }
+          }
+          containers.length > 1 &&
+            output.push(
+              <EvolutionBG key={`Evolution container 0`}>
+                {containers}
+              </EvolutionBG>
+            )
+          break
+        case "trade":
+          if (details.evolution_details.details[i].held_item !== null) {
+            output.push(
+              <EvolutionBG
+                key={`Trade ${details.evolution_details.item.name}`}
+                className="use"
+              >
+                <strong>Trade while holding:</strong>
+                <img
+                  src={details.evolution_details.item.sprites.default}
+                  alt={`Trade while holding ${details.evolution_details.item.name}`}
+                  title={`Trade while holding ${details.evolution_details.item.name}`}
+                />
+              </EvolutionBG>
+            )
+          } else if (
+            details.evolution_details.details[i].trade_species !== null
+          )
+            output.push(
+              <EvolutionBG
+                key={`Trade for ${details.evolution_details.details[i].trade_species.name}`}
+                className="use"
+              >
+                <p>
+                  trade for a{" "}
+                  <strong>{`${details.evolution_details.details[i].trade_species.name}`}</strong>
+                </p>
+              </EvolutionBG>
+            )
+          else
+            output.push(
+              <EvolutionBG key={`Trade-${i}`} className="use">
+                <GiTrade
+                  alt="Trade with no held items"
+                  title="Trade with no held items"
+                />
+                <p>&nbsp; trade</p>
+              </EvolutionBG>
+            )
+          break
+        case "use-item":
+          if (details.evolution_details.details[i].item !== null)
+            output.push(
+              <EvolutionBG
+                key={`Hold ${details.evolution_details.item.name}`}
+                className="use"
+              >
+                <strong>Use:</strong>
+                <img
+                  src={details.evolution_details.item.sprites.default}
+                  alt={`Use ${details.evolution_details.item.name}`}
+                  title={`Use ${details.evolution_details.item.name}`}
+                />
+              </EvolutionBG>
+            )
+          else output.push(<p key={`Use-${i}`}>Use item</p>)
+          break
+        case "shed":
+          output.push(
+            <EvolutionBG key="shedinja" className="use">
+              <Shed>
+                Reach level 20 while having at least a free spot in your team
+                and at least a Poké Ball in your bag
+              </Shed>
+            </EvolutionBG>
+          )
+          break
+        case "spin":
+          output.push(
+            <EvolutionBG key="alcremie" className="use">
+              <div>
+                <p>Evolves into</p>
+                <Alcremie>
+                  <li>
+                    Vanilla Cream Alcremie after spinning clockwise for less
+                    than 5 seconds during the day
+                  </li>
+                  <li>
+                    Ruby Cream Alcremie after spinning counterclockwise for less
+                    than 5 seconds during the day
+                  </li>
+                  <li>
+                    Matcha Cream Alcremie after spinning clockwise for less than
+                    5 seconds at night
+                  </li>
+                  <li>
+                    Mint Cream Alcremie after spinning counterclockwise for more
+                    than 5 seconds at night
+                  </li>
+                  <li>
+                    Lemon Cream Alcremie after spinning clockwise for more than
+                    5 seconds at night
+                  </li>
+                  <li>
+                    Salted Cream Alcremie after spinning counterclockwise for
+                    less than 5 seconds at night
+                  </li>
+                  <li>
+                    Ruby Swirl Alcremie after spinning counterclockwise for more
+                    than 5 seconds during the day
+                  </li>
+                  <li>
+                    Caramel Swirl Alcremie after spinning clockwise for more
+                    than 5 seconds during the day
+                  </li>
+                  <li>
+                    Rainbow Swirl Alcremie after spinning counterclockwise for
+                    more than 10 seconds between 7:00 PM and 7:59 PM in-game
+                    time
+                  </li>
+                </Alcremie>
+              </div>
+            </EvolutionBG>
+          )
+          break
+        case "tower-of-darkness":
+          output.push(
+            <EvolutionBG key="tower-of-darkness" className="use">
+              <Shed>
+                Evolves into Single Strike Style Urshifu (Fighting/Dark) when
+                shown the scroll in the Tower of Darkness
+              </Shed>
+            </EvolutionBG>
+          )
+          break
+        case "tower-of-waters":
+          output.push(
+            <EvolutionBG key="tower-of-waters" className="use">
+              <Shed>
+                Evolves into Rapid Strike Style (Fighting/Water) Urshifu when
+                shown the scroll of darkness in the Tower of Waters
+              </Shed>
+            </EvolutionBG>
+          )
+          break
+        case "three-critical-hits":
+          output.push(
+            <EvolutionBG key="three critical hits" className="use">
+              <Shed>
+                Evolves from Galarian Farfetch'd. Land three critical hits in a
+                single battle
+              </Shed>
+            </EvolutionBG>
+          )
+          break
+        case "take-damage":
+          output.push(
+            <EvolutionBG key="take damage" className="use">
+              <Shed>
+                Evolves from Galarian Yamask. Take at least 49 HP in damage (not
+                self-inflicted) without fainting, then travel under the stone
+                arch in Dusty Bowl.
+              </Shed>
+            </EvolutionBG>
+          )
+          break
+        case "other":
+          output.push(<p>Other</p>)
+          break
+        case "agile-style-move":
+          output.push(
+            <EvolutionBG key="agile style move" className="use">
+              <Shed>
+                Evolves in Hisui after using Psyshield Bash in the agile style
+                at least twenty times
+              </Shed>
+            </EvolutionBG>
+          )
+          break
+        case "strong-style-move":
+          output.push(
+            <EvolutionBG key="strong style move" className="use">
+              <Shed>
+                Evolves from Hisuian Qwilfish after using Barb Barrage in the
+                strong style at least 20 times
+              </Shed>
+            </EvolutionBG>
+          )
+          break
+        case "recoil-damage":
+          output.push(
+            <EvolutionBG key="recoil damage" className="use">
+              <Shed>
+                Evolves from White-Striped Basculin after losing at least 294 HP
+                from recoil damage without fainting
+              </Shed>
+            </EvolutionBG>
+          )
+          break
+        default:
+          console.log("Unknown evolution type")
+          break
+      }
+    }
+    return output
+  }
 
   if (isError) {
     toast.error(message)
@@ -178,10 +579,14 @@ function Pokemon() {
                     : pokemon.pokemon.sprites.other.home.front_default
                 }
                 title={`Sprite of ${
-                  pokemon.pokemonSpecies.names.find((e) => e.language.name === currentLanguage).name
+                  pokemon.pokemonSpecies.names.find(
+                    (e) => e.language.name === currentLanguage
+                  ).name
                 }`}
                 alt={`Sprite of ${
-                  pokemon.pokemonSpecies.names.find((e) => e.language.name === currentLanguage).name
+                  pokemon.pokemonSpecies.names.find(
+                    (e) => e.language.name === currentLanguage
+                  ).name
                 }`}
               />
             </Left>
@@ -319,17 +724,33 @@ function Pokemon() {
                 <EvolutionRow
                   key={`Evolution ${evolution.names[0].name}-${index}`}
                 >
-                  <Evolution pokemon={evolution} currentLanguage={currentLanguage} />
+                  <Evolution
+                    pokemon={evolution}
+                    currentLanguage={currentLanguage}
+                  />
                   {Object.keys(evolution.secondStage).length !== 0 && (
                     <>
-                      <Arrow />
-                      <Evolution pokemon={evolution.secondStage} currentLanguage={currentLanguage} />
+                      <EvolutionDetails>
+                        {evolutionType(evolution.secondStage)}
+                        <Arrow />
+                      </EvolutionDetails>
+
+                      <Evolution
+                        pokemon={evolution.secondStage}
+                        currentLanguage={currentLanguage}
+                      />
                     </>
                   )}
                   {Object.keys(evolution.thirdStage).length !== 0 && (
                     <>
-                      <Arrow />
-                      <Evolution pokemon={evolution.thirdStage} currentLanguage={currentLanguage} />
+                      <EvolutionDetails>
+                        {evolutionType(evolution.thirdStage)}
+                        <Arrow />
+                      </EvolutionDetails>
+                      <Evolution
+                        pokemon={evolution.thirdStage}
+                        currentLanguage={currentLanguage}
+                      />
                     </>
                   )}
                 </EvolutionRow>

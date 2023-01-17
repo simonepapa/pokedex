@@ -10,7 +10,6 @@ const Container = styled.div`
 const SpriteContainer = styled.div`
   border-radius: 50%;
   width: fit-content;
-  padding: 8px;
 `
 const Sprite = styled.img`
   width: 100%;
