@@ -30,7 +30,7 @@ const Sprite = styled.img`
   margin: 8px auto;
 `
 
-function AlternativeCard({ pokemon, currentLanguage }) {
+function AlternativeCard({ pokemon }) {
   return (
     <Container to={`${pokemon.id}`}>
       <Sprite

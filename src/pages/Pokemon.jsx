@@ -9,7 +9,7 @@ import Type from "../components/Type"
 import Evolution from "../components/Evolution"
 import AlternativeCard from "../components/AlternativeCard"
 import { BsArrowRight } from "react-icons/bs"
-import { GiTrade } from "react-icons/gi"
+import { GiTrade, GiMale, GiFemale } from "react-icons/gi"
 
 const SpinnerContainer = styled.div`
   display: flex;
@@ -43,6 +43,7 @@ const LanguageSwitch = styled.div`
 
 const Left = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   flex: 40%;
@@ -71,6 +72,42 @@ const Sprite = styled.img`
   height: 90%;
 `
 
+const GenderSwitcher = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 32px 0 0 0;
+
+  svg:not(.active) {
+    opacity: 0.5;
+  }
+  svg:hover:not(.active) {
+    cursor: pointer;
+    opacity: 0.75;
+  }
+`
+
+const MaleIcon = styled(GiMale)`
+  width: 32px;
+  height: auto;
+  margin: 0 16px;
+  padding: 8px;
+  background-color: rgba(217, 217, 217, 0.5);
+  border-radius: 8px;
+  fill: #02a3fe;
+  transition: opacity 0.1s linear;
+`
+
+const FemaleIcon = styled(GiFemale)`
+  width: 32px;
+  height: auto;
+  margin: 0 16px;
+  padding: 8px;
+  background-color: rgba(217, 217, 217, 0.5);
+  border-radius: 8px;
+  fill: #ec49a6;
+  transition: opacity 0.1s linear;
+`
+
 const Description = styled.p`
   font-size: 18px;
 `
@@ -78,13 +115,19 @@ const Description = styled.p`
 const Stats = styled.div`
   max-width: 70%;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, 150px);
   grid-column-gap: 0px;
   grid-row-gap: 0px;
   background-color: #42adbb80;
   border-radius: 8px;
   padding: 16px;
+
+  svg {
+    width: 24px;
+    margin: 0 8px 0 0;
+    padding: 0;
+    background-color: transparent;
+  }
 `
 
 const StatName = styled.h3`
@@ -180,6 +223,7 @@ const AlternativeForms = styled.div`
 
 function Pokemon() {
   const [currentLanguage, setCurrentLanguage] = useState("en")
+  const [currentGender, setCurrentGender] = useState("")
 
   const params = useParams()
 
@@ -581,10 +625,25 @@ function Pokemon() {
             <Left>
               <Sprite
                 src={
-                  pokemon.pokemon.sprites.other.dream_world.front_default !==
-                  null
-                    ? pokemon.pokemon.sprites.other.dream_world.front_default
-                    : pokemon.pokemon.sprites.other.home.front_default
+                  currentGender === "" || currentGender === "male"
+                    ? pokemon.pokemon.sprites.other.dream_world
+                        .front_default !== null
+                      ? pokemon.pokemon.sprites.other.dream_world.front_default
+                      : pokemon.pokemon.sprites.other.home.front_default !== null
+                      ? pokemon.pokemon.sprites.other.home.front_default
+                      : pokemon.pokemon.sprites.other["official-artwork"] !== null
+                      ? pokemon.pokemon.sprites.other["official-artwork"]
+                      : pokemon.pokemon.sprites.front_default
+                    : pokemon.pokemon.sprites.other.dream_world.front_female !== null
+                    ? pokemon.pokemon.sprites.other.dream_world.front_female
+                    : pokemon.pokemon.sprites.other.home.front_female !== null
+                    ? pokemon.pokemon.sprites.other.home.front_female
+                    : pokemon.pokemon.sprites.front_female !== null 
+                    ? pokemon.pokemon.sprites.front_female
+                    : pokemon.forms.find(e => e.name.includes("female")) !== undefined
+                    ? pokemon.forms.find(e => e.name.includes("female")).sprites.front_default
+                    : ""
+                    
                 }
                 title={`Sprite of ${
                   pokemon.pokemonSpecies.names.find(
@@ -597,6 +656,29 @@ function Pokemon() {
                   ).name
                 }`}
               />
+              {pokemon.pokemonSpecies.has_gender_differences && (
+                <GenderSwitcher>
+                  {pokemon.pokemonSpecies.gender_rate !== 8 && (
+                    <MaleIcon
+                      onClick={() => setCurrentGender("male")}
+                      className={
+                        (currentGender === "" || currentGender === "male") &&
+                        "active"
+                      }
+                    />
+                  )}
+                  {pokemon.pokemonSpecies.gender_rate !== 0 && (
+                    <FemaleIcon
+                      onClick={() => setCurrentGender("female")}
+                      className={
+                        (pokemon.pokemonSpecies.gender_rate === 8 ||
+                          currentGender === "female") &&
+                        "active"
+                      }
+                    />
+                  )}
+                </GenderSwitcher>
+              )}
             </Left>
             <Right>
               <LanguageSwitch>
@@ -684,16 +766,60 @@ function Pokemon() {
                   </StatValue>
                 </div>
                 <div>
+                  <StatName>Shape</StatName>
+                  <StatValue>
+                    {pokemon.pokemonSpecies.shape.name.charAt(0).toUpperCase() +
+                      pokemon.pokemonSpecies.shape.name.slice(1)}
+                  </StatValue>
+                </div>
+                <div>
+                  <StatName>Habitat</StatName>
+                  <StatValue>
+                    {pokemon.pokemonSpecies.habitat !== null
+                      ? pokemon.pokemonSpecies.habitat.name
+                          .replace(/-/g, " ")
+                          .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())
+                      : "Unknown"}
+                  </StatValue>
+                </div>
+                <div>
                   <StatName>Abilities</StatName>
                   {pokemon.pokemon.abilities.map((ability) => (
                     <StatValue key={ability.ability.name}>
-                      {ability.ability.name.charAt(0).toUpperCase() +
-                        ability.ability.name.slice(1)}{" "}
+                      {ability.ability.name
+                        .replace(/-/g, " ")
+                        .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}
                       {ability.is_hidden === true && "(Hidden)"}
                     </StatValue>
                   ))}
+                </div>
+                <div>
+                  <StatName>Baby</StatName>
+                  {pokemon.pokemonSpecies.is_baby ? "Yes" : "No"}
                   <StatValue></StatValue>
-                  <StatValue></StatValue>
+                </div>
+                <div>
+                  <StatName>Legendary</StatName>
+                  {pokemon.pokemonSpecies.is_legendary ? "Yes" : "No"}
+                </div>
+                <div>
+                  <StatName>Mythical</StatName>
+                  {pokemon.pokemonSpecies.is_mythical ? "Yes" : "No"}
+                </div>
+                <div>
+                  <StatName>Gender</StatName>
+                  {pokemon.pokemonSpecies.gender_rate === -1 ? (
+                    "Genderless"
+                  ) : pokemon.pokemonSpecies.gender_rate === 8 ? (
+                    <FemaleIcon />
+                  ) : pokemon.pokemonSpecies.gender_rate === 0 ? (
+                    <MaleIcon />
+                  ) : (
+                    <>
+                      <MaleIcon />
+                      <FemaleIcon />
+                    </>
+                  )}
                 </div>
               </Stats>
               <div>
@@ -770,7 +896,7 @@ function Pokemon() {
               <SecondaryTitle>Forms</SecondaryTitle>
               <AlternativeForms>
                 {pokemon.forms.map((pokemon) => (
-                  <AlternativeCard key={pokemon.id} pokemon={pokemon} currentLanguage={currentLanguage} />
+                  <AlternativeCard key={pokemon.id} pokemon={pokemon} />
                 ))}
               </AlternativeForms>
             </Bottom>
