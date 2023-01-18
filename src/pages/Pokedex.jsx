@@ -5,6 +5,7 @@ import { toast } from "react-toastify"
 import Spinner from "../components/Spinner"
 import { useGetPokemonByGenQuery } from "../features/api/apiSlice"
 import Card from "../components/Card"
+import Type from "../components/Type"
 
 const SpinnerContainer = styled.div`
   display: flex;
@@ -81,6 +82,48 @@ const Grid = styled.div`
   flex-wrap: wrap;
 `
 
+const TypeFilters = styled.div`
+  margin: 16px 76px 24px 76px;
+
+  div {
+    display: flex;
+    align-items: center;
+  }
+
+  button {
+    display: block;
+    background-color: #d75050;
+    border: 0;
+    border-radius: 8px;
+    padding: 8px;
+    margin: 0 0 0 16px;
+    text-transform: uppercase;
+    transition: box-shadow 0.1s linear;
+    font-size: 12px;
+
+    :hover {
+      cursor: pointer;
+      box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+  }
+`
+
+const Types = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  p {
+    margin: 0 16px 16px 0;
+    transition: opacity 0.1s linear;
+  }
+
+  p:hover {
+    cursor: pointer;
+    opacity: 1;
+  }
+`
+
 function Pokedex() {
   const [searchParams, setSearchParams] = useSearchParams()
   const generations = [1, 2, 3, 4, 5, 6, 7, 8]
@@ -112,6 +155,7 @@ function Pokedex() {
         return b.id - a.id
       })
     } else if (searchParams.get("order") === "az") {
+      // Sort pokemon in alphabetical order from A to Z
       sortedPokemon.sort((a, b) => {
         if (a.name < b.name) {
           return -1
@@ -122,6 +166,7 @@ function Pokedex() {
         return 0
       })
     } else if (searchParams.get("order") === "za") {
+      // Sort pokemon in alphabetical order from Z to A
       sortedPokemon.sort((a, b) => {
         if (a.name < b.name) {
           return 1
@@ -133,10 +178,36 @@ function Pokedex() {
       })
     }
 
+    // Filter pokemon by type
+    if (searchParams.get("type") !== null) {
+      // Get all types in query URL and put each one in array as string
+      const paramsTypes = searchParams.get("type").split(",")
+
+      // As we're using sortedPokemon array both to order/filter and to loop in the return function, we can't use filter (as it would create another array)
+      // We loop through array by hand
+      let from = 0
+      let to = 0
+      while (from < sortedPokemon.length) {
+        // Loop through every type of pokemon (max 2 loops)
+        for (let i = 0; i < sortedPokemon[from].types.length; i++) {
+          // If the type is included in the types array we created before, then put the pokemon in the list's firt position and increase the "to" parameter
+          if (paramsTypes.includes(sortedPokemon[from].types[i].type.name)) {
+            sortedPokemon[to] = sortedPokemon[from]
+            to++
+          }
+        }
+        // Increase from parameter
+        from++
+      }
+      // "Delete" all the pokemon whose types are not included in the array by setting the sortedPokemon's length to the "to" parameter
+      sortedPokemon.length = to
+    }
+
     return sortedPokemon
-  }, [list, searchParams.get("order")])
+  }, [list, searchParams.get("order"), searchParams.get("type")])
 
   const refreshGen = (e) => {
+    // When user clicks on a generation number, change the URL parameter
     setSearchParams((searchParams) => {
       searchParams.set("gen", e.target.childNodes[0].nodeValue)
       return searchParams
@@ -144,10 +215,37 @@ function Pokedex() {
   }
 
   const handleSelect = (e) => {
+    // When the user selects an order criteria, change the URL parameter
     setSearchParams((searchParams) => {
       searchParams.set("order", e.target.value)
       return searchParams
     })
+  }
+
+  const handleTypeClick = (e) => {
+    // When user clicks on a type, change its state (from inactive to active and viceversa)
+    e.target.classList.toggle("inactive")
+    e.target.classList.toggle("active")
+  }
+
+  const handleTypesFilters = (e) => {
+    const paramsFilters = []
+    // Get all the selected types (this will select DOM element)
+    const activeFilters = document.querySelectorAll(".type.active")
+    // For each element, get its attribute "type" and put it in an array
+    activeFilters.forEach((type) => {
+      paramsFilters.push(type.getAttribute("type"))
+    })
+    // If at least one type is selected, then update the URL parameter, else delete the URL parameter
+    if (activeFilters.length > 0) {
+      setSearchParams((searchParams) => {
+        searchParams.set("type", paramsFilters)
+        return searchParams
+      })
+    } else {
+      searchParams.delete("type")
+      setSearchParams(searchParams)
+    }
   }
 
   if (isLoading) {
@@ -193,6 +291,104 @@ function Pokedex() {
           </select>
         </OrderList>
       </SimpleFilters>
+      <TypeFilters>
+        <div>
+          <h2>Types</h2>
+          <button onClick={handleTypesFilters}>Apply</button>
+        </div>
+        <Types>
+          <Type
+            onClick={handleTypeClick}
+            type="normal"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="fire"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="water"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="electric"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="grass"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="ice"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="fighting"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="poison"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="ground"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="flying"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="psychic"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="bug"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="rock"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="ghost"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="dragon"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="dark"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="steel"
+            className="type inactive"
+          />
+          <Type
+            onClick={handleTypeClick}
+            type="fairy"
+            className="type inactive"
+          />
+        </Types>
+      </TypeFilters>
       <Grid>
         {!isFetching ? (
           <>
