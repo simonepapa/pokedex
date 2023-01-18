@@ -29,12 +29,16 @@ export const apiSlice = createApi({
       async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
         let evolutions = []
         let item = {}
+        let forms = []
         const pokemon = await fetchWithBQ(`pokemon/${_arg}`)
         const pokemonSpecies = await fetchWithBQ(`pokemon-species/${_arg}`)
         const evolutionChain = await fetchWithBQ(`evolution-chain/${pokemonSpecies.data.evolution_chain.url.slice(42)}`)
         const firstStagePokemon = await fetchWithBQ(`pokemon/${evolutionChain.data.chain.species.url.slice(42)}`)    
-        const firstStagePokemonSpecies = await fetchWithBQ(`pokemon-species/${evolutionChain.data.chain.species.url.slice(42)}`)     
+        const firstStagePokemonSpecies = await fetchWithBQ(`pokemon-species/${evolutionChain.data.chain.species.url.slice(42)}`)   
+        
+        // Get evolution chain
         for await (const evolution of evolutionChain.data.chain.evolves_to) {
+          // Get second stage
           const secondStagePokemon = await fetchWithBQ(`pokemon/${evolution.species.url.slice(42)}`)    
           const secondStagePokemonSpecies = await fetchWithBQ(`pokemon-species/${evolution.species.url.slice(42)}`)  
           for (let i = 0; i < evolution.evolution_details.length; i++) {
@@ -46,6 +50,8 @@ export const apiSlice = createApi({
             } 
           }
           const secondStage = {names: secondStagePokemonSpecies.data.names, sprites: secondStagePokemon.data.sprites, types: secondStagePokemon.data.types, evolution_details: {details: evolution.evolution_details, item: item.data}}
+
+          // Get third stage
           let thirdStage = {}
           let thirdStageItem = {}
           for (let i = 0; i < evolution.evolves_to.length; i++) {
@@ -62,6 +68,22 @@ export const apiSlice = createApi({
 
           evolutions = [...evolutions, {names: firstStagePokemonSpecies.data.names, sprites: firstStagePokemon.data.sprites, types: firstStagePokemon.data.types, secondStage: secondStage, thirdStage: thirdStage }]
         }
+
+        // Get different forms
+        for await (const form of pokemonSpecies.data.varieties) {
+          if (!form.is_default) {
+            const alternative = await fetchWithBQ(`pokemon/${form.pokemon.url.slice(34)}`)   
+            forms = [...forms, alternative.data]
+          }
+        }
+        if (pokemon.data.forms > 1) {
+          for await (const form of pokemon.data.forms) {
+            const alternative = await fetchWithBQ(`pokemon-form/${form.url.slice(39)}`)   
+            forms = [...forms, alternative.data]
+          }
+        }
+        
+
         if (pokemon.error)
           return {
             error: pokemon.error,
@@ -75,6 +97,7 @@ export const apiSlice = createApi({
             pokemon: pokemon.data,
             pokemonSpecies: pokemonSpecies.data,
             evolutionChain: evolutions,
+            forms: forms,
           },
         } 
       },

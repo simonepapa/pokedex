@@ -2,12 +2,12 @@ import { useState, useMemo } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import { toast } from "react-toastify"
-import { countries } from "country-flag-icons"
 import { IT, FR, DE, ES, GB, JP, KR } from "country-flag-icons/react/3x2"
 import Spinner from "../components/Spinner"
 import { useGetPokemonByIdQuery } from "../features/api/apiSlice"
 import Type from "../components/Type"
 import Evolution from "../components/Evolution"
+import AlternativeCard from "../components/AlternativeCard"
 import { BsArrowRight } from "react-icons/bs"
 import { GiTrade } from "react-icons/gi"
 
@@ -168,6 +168,14 @@ const EvolutionBG = styled.div`
     display: flex;
     align-items: center;
   }
+`
+
+const AlternativeForms = styled.div`
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 8px;
 `
 
 function Pokemon() {
@@ -337,7 +345,7 @@ function Pokemon() {
                     break
                   default:
                     containers.push(
-                      <p key={`Level up ${i+1}`}>
+                      <p key={`Level up ${i + 1}`}>
                         {`${prop.replace(/_/g, " ")}`}:{" "}
                         {`${details.evolution_details.details[i][prop]}`}
                       </p>
@@ -702,7 +710,7 @@ function Pokemon() {
             </Right>
           </Info>
           <Bottom>
-            <SecondaryTitle>Stats</SecondaryTitle>
+            <SecondaryTitle>Base stats</SecondaryTitle>
             <Grid>
               {pokemon.pokemon.stats.map((stat) => {
                 return (
@@ -755,6 +763,16 @@ function Pokemon() {
                   )}
                 </EvolutionRow>
               ))}
+            </Bottom>
+          )}
+          {pokemon.forms.length > 0 && (
+            <Bottom>
+              <SecondaryTitle>Forms</SecondaryTitle>
+              <AlternativeForms>
+                {pokemon.forms.map((pokemon) => (
+                  <AlternativeCard key={pokemon.id} pokemon={pokemon} currentLanguage={currentLanguage} />
+                ))}
+              </AlternativeForms>
             </Bottom>
           )}
         </>

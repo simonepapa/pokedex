@@ -48,6 +48,7 @@ function Card({ pokemon }) {
             : pokemon.sprites.other.home.front_default
         }
         alt={`Sprite of ${pokemon.species.name}`}
+        title={`Sprite of ${pokemon.species.name}`}
       />
       <Name>
         {pokemon.species.name.charAt(0).toUpperCase() + pokemon.species.name.slice(1)}
