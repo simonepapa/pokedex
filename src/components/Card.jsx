@@ -47,10 +47,10 @@ function Card({ pokemon }) {
             ? pokemon.sprites.other.dream_world.front_default
             : pokemon.sprites.other.home.front_default
         }
-        alt={`Sprite of ${pokemon.name}`}
+        alt={`Sprite of ${pokemon.species.name}`}
       />
       <Name>
-        {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
+        {pokemon.species.name.charAt(0).toUpperCase() + pokemon.species.name.slice(1)}
       </Name>
       <Grid>
         {pokemon.types.map((type) => (
