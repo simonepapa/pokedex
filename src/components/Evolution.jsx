@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import styled from "styled-components"
-import Zoom from 'react-medium-image-zoom'
-import 'react-medium-image-zoom/dist/styles.css'
+import Zoom from "react-medium-image-zoom"
+import "react-medium-image-zoom/dist/styles.css"
 import Type from "./Type"
 
 const Container = styled.div`
@@ -30,16 +30,20 @@ const Grid = styled.div`
 `
 
 function Evolution({ pokemon, currentLanguage }) {
-  console.log(pokemon)
   return (
     <Container>
       <SpriteContainer>
         <Zoom>
           <Sprite
             src={
-              pokemon.sprites.other.dream_world.front_default !== null
+              pokemon.sprites.other.home.front_default !== null
+                ? pokemon.sprites.other.home.front_default
+                : pokemon.sprites.other.dream_world.front_default !== null
                 ? pokemon.sprites.other.dream_world.front_default
-                : pokemon.sprites.other.home.front_default
+                : pokemon.sprites.other["official-artwork"].front_default !==
+                  null
+                ? pokemon.sprites.other["official-artwork"]
+                : pokemon.sprites.front_default
             }
             title={`Sprite of ${
               pokemon.names.find((e) => e.language.name === currentLanguage)
@@ -53,7 +57,9 @@ function Evolution({ pokemon, currentLanguage }) {
         </Zoom>
       </SpriteContainer>
       <Name>
-        {`#${pokemon.number.toString().padStart(3, "0")} ${pokemon.names.find((e) => e.language.name === currentLanguage).name}`}
+        {`#${pokemon.number.toString().padStart(3, "0")} ${
+          pokemon.names.find((e) => e.language.name === currentLanguage).name
+        }`}
       </Name>
       <Grid>
         {pokemon.types.map((type) => (

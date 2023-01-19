@@ -28,7 +28,7 @@ export const apiSlice = createApi({
     getPokemonById: builder.query({
       async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
         let evolutions = []
-        let item = {}
+        let items = []
         let forms = []
         const pokemon = await fetchWithBQ(`pokemon/${_arg}`)
         const pokemonSpecies = await fetchWithBQ(`pokemon-species/${_arg}`)
@@ -43,27 +43,31 @@ export const apiSlice = createApi({
           const secondStagePokemonSpecies = await fetchWithBQ(`pokemon-species/${evolution.species.url.slice(42)}`)  
           for (let i = 0; i < evolution.evolution_details.length; i++) {
             if (evolution.evolution_details[i].held_item !== null) {
-              item = await fetchWithBQ(`item/${evolution.evolution_details[i].held_item.url.slice(31)}`)
+              const item = await fetchWithBQ(`item/${evolution.evolution_details[i].held_item.url.slice(31)}`)
+              evolution.evolution_details[i].item = {...evolution.evolution_details[i].item, ...item.data}
             } 
             if (evolution.evolution_details[i].item !== null) {
-              item = await fetchWithBQ(`item/${evolution.evolution_details[i].item.url.slice(31)}`)
+              const item = await fetchWithBQ(`item/${evolution.evolution_details[i].item.url.slice(31)}`)
+              evolution.evolution_details[i].item = {...evolution.evolution_details[i].item, ...item.data}
             } 
           }
-          const secondStage = {number: secondStagePokemon.data.id, names: secondStagePokemonSpecies.data.names, sprites: secondStagePokemon.data.sprites, types: secondStagePokemon.data.types, evolution_details: {details: evolution.evolution_details, item: item.data}}
+          const secondStage = {number: secondStagePokemon.data.id, names: secondStagePokemonSpecies.data.names, sprites: secondStagePokemon.data.sprites, types: secondStagePokemon.data.types, evolution_details: {details: evolution.evolution_details}}
 
           // Get third stage
           let thirdStage = {}
-          let thirdStageItem = {}
           for (let i = 0; i < evolution.evolves_to.length; i++) {
             const pokemon = await fetchWithBQ(`pokemon/${evolution.evolves_to[i].species.url.slice(42)}`)    
             const pokemonSpecies = await fetchWithBQ(`pokemon-species/${evolution.evolves_to[i].species.url.slice(42)}`)   
+            console.log(evolution.evolves_to)
             if (evolution.evolves_to[i].evolution_details[0].held_item !== null) {
-              thirdStageItem = await fetchWithBQ(`item/${evolution.evolves_to[i].evolution_details[0].held_item.url.slice(31)}`)
+              const thirdStageItem = await fetchWithBQ(`item/${evolution.evolves_to[i].evolution_details[0].held_item.url.slice(31)}`)
+              evolution.evolves_to[i].evolution_details[0].item = {...evolution.evolves_to[i].evolution_details[0].item, ...thirdStageItem.data}
             } 
             if (evolution.evolves_to[i].evolution_details[0].item !== null) {
-              thirdStageItem = await fetchWithBQ(`item/${evolution.evolves_to[i].evolution_details[0].item.url.slice(31)}`)
+              const thirdStageItem = await fetchWithBQ(`item/${evolution.evolves_to[i].evolution_details[0].item.url.slice(31)}`)
+              evolution.evolves_to[i].evolution_details[0].item = {...evolution.evolves_to[i].evolution_details[0].item, ...thirdStageItem.data}
             } 
-            thirdStage = {number: pokemon.data.id, names: pokemonSpecies.data.names, sprites: pokemon.data.sprites, types: pokemon.data.types, evolution_details: {details: evolution.evolves_to[i].evolution_details, item: thirdStageItem.data}}
+            thirdStage = {number: pokemon.data.id, names: pokemonSpecies.data.names, sprites: pokemon.data.sprites, types: pokemon.data.types, evolution_details: {details: evolution.evolves_to[i].evolution_details}}
           }
 
           evolutions = [...evolutions, {number: firstStagePokemon.data.id, names: firstStagePokemonSpecies.data.names, sprites: firstStagePokemon.data.sprites, types: firstStagePokemon.data.types, secondStage: secondStage, thirdStage: thirdStage }]
@@ -82,7 +86,6 @@ export const apiSlice = createApi({
             forms = [...forms, alternative.data]
           }
         }
-        
 
         if (pokemon.error)
           return {

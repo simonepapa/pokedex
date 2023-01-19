@@ -2,8 +2,8 @@ import { useState } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import { toast } from "react-toastify"
-import Zoom from 'react-medium-image-zoom'
-import 'react-medium-image-zoom/dist/styles.css'
+import Zoom from "react-medium-image-zoom"
+import "react-medium-image-zoom/dist/styles.css"
 import { IT, FR, DE, ES, GB, JP, KR } from "country-flag-icons/react/3x2"
 import Spinner from "../components/Spinner"
 import { useGetPokemonByIdQuery } from "../features/api/apiSlice"
@@ -51,11 +51,26 @@ const Left = styled.div`
   flex: 40%;
   max-width: 40%;
   margin-right: 8px;
-  background-color: rgba(217, 217, 217, 0.5);
-  border-radius: 8px;
   height: fit-content;
   margin: auto 0;
+`
+
+const LeftContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(217, 217, 217, 0.5);
+  width: 100%;
+  border-radius: 8px;
+  height: fit-content;
+  margin: auto 0 8px 0;
   padding: 16px 0;
+
+  &.smaller {
+    width: fit-content;
+    padding: 8px 0;
+  }
 `
 
 const Right = styled.div`
@@ -72,12 +87,13 @@ const Sprite = styled.img`
   max-width: 90%;
   width: auto;
   height: 90%;
+  max-height: 200px;
 `
 
 const GenderSwitcher = styled.div`
   display: flex;
   align-items: center;
-  margin: 32px 0 0 0;
+  margin: 0;
 
   svg:not(.active) {
     opacity: 0.5;
@@ -412,14 +428,14 @@ function Pokemon() {
           if (details.evolution_details.details[i].held_item !== null) {
             output.push(
               <EvolutionBG
-                key={`Trade ${details.evolution_details.item.name}`}
+                key={`Trade ${details.evolution_details.details[i].item.name}`}
                 className="use"
               >
                 <strong>Trade while holding:</strong>
                 <img
-                  src={details.evolution_details.item.sprites.default}
-                  alt={`Trade while holding ${details.evolution_details.item.name}`}
-                  title={`Trade while holding ${details.evolution_details.item.name}`}
+                  src={details.evolution_details.details[i].item.sprites.default}
+                  alt={`Trade while holding ${details.evolution_details.details[i].item.name}`}
+                  title={`Trade while holding ${details.evolution_details.details[i].item.name}`}
                 />
               </EvolutionBG>
             )
@@ -449,20 +465,22 @@ function Pokemon() {
             )
           break
         case "use-item":
-          if (details.evolution_details.details[i].item !== null)
+          if (details.evolution_details.details[i].item !== null) {
             output.push(
               <EvolutionBG
-                key={`Hold ${details.evolution_details.item.name}`}
+                key={`Hold ${details.evolution_details.details[i].item.name}`}
                 className="use"
               >
                 <strong>Use:</strong>
                 <img
-                  src={details.evolution_details.item.sprites.default}
-                  alt={`Use ${details.evolution_details.item.name}`}
-                  title={`Use ${details.evolution_details.item.name}`}
+                  src={details.evolution_details.details[i].item.sprites.default}
+                  alt={`Use ${details.evolution_details.details[i].item.name}`}
+                  title={`Use ${details.evolution_details.details[i].item.name}`}
                 />
               </EvolutionBG>
             )
+          }
+            
           else output.push(<p key={`Use-${i}`}>Use item</p>)
           break
         case "shed":
@@ -605,6 +623,116 @@ function Pokemon() {
     return output
   }
 
+  const spriteDecider = (shiny) => {
+    if (currentGender === "male" || currentGender === "") {
+      if (!shiny) {
+        if (pokemon.pokemon.sprites.hasOwnProperty("other")) {
+          if (
+            pokemon.pokemon.sprites.other.hasOwnProperty("home") &&
+            pokemon.pokemon.sprites.other.home.front_default !== null
+          ) {
+            return pokemon.pokemon.sprites.other.home.front_default
+          } else if (
+            pokemon.pokemon.sprites.other.hasOwnProperty("dream_world") &&
+            pokemon.pokemon.sprites.other.dream_world.front_default !== null
+          ) {
+            return pokemon.pokemon.sprites.other.dream_world.front_default
+          } else if (
+            pokemon.pokemon.sprites.other.hasOwnProperty("official-artwork") &&
+            pokemon.pokemon.sprites.other["official-artwork"].front_default !==
+              null
+          ) {
+            return pokemon.pokemon.sprites.other["official-artwork"]
+              .front_default
+          }
+        } else {
+          return pokemon.pokemon.sprites.front_default
+        }
+      } else {
+        if (pokemon.pokemon.sprites.hasOwnProperty("other")) {
+          if (
+            pokemon.pokemon.sprites.other.hasOwnProperty("home") &&
+            pokemon.pokemon.sprites.other.home.hasOwnProperty("front_shiny") &&
+            pokemon.pokemon.sprites.other.home.front_shiny !== null
+          ) {
+            return pokemon.pokemon.sprites.other.home.front_shiny
+          } else if (
+            pokemon.pokemon.sprites.other.hasOwnProperty("dream_world") &&
+            pokemon.pokemon.sprites.other.dream_world.hasOwnProperty(
+              "front_shiny"
+            ) &&
+            pokemon.pokemon.sprites.other.dream_world.front_shiny !== null
+          ) {
+            return pokemon.pokemon.sprites.other.dream_world.front_shiny
+          } else if (
+            pokemon.pokemon.sprites.other.hasOwnProperty("official-artwork") &&
+            pokemon.pokemon.sprites.other["official-artwork"].hasOwnProperty(
+              "front_shiny"
+            ) &&
+            pokemon.pokemon.sprites.other["official-artwork"].front_shiny !==
+              null
+          ) {
+            return pokemon.pokemon.sprites.other["official-artwork"].front_shiny
+          }
+        } else {
+          return pokemon.pokemon.sprites.front_shiny
+        }
+      }
+    } else {
+      if (!shiny) {
+        if (pokemon.pokemon.sprites.hasOwnProperty("other")) {
+          if (
+            pokemon.pokemon.sprites.other.hasOwnProperty("home") &&
+            pokemon.pokemon.sprites.other.home.front_female !== null
+          ) {
+            return pokemon.pokemon.sprites.other.home.front_female
+          } else if (
+            pokemon.pokemon.sprites.other.hasOwnProperty("dream_world") &&
+            pokemon.pokemon.sprites.other.dream_world.front_female !== null
+          ) {
+            return pokemon.pokemon.sprites.other.dream_world.front_female
+          } else if (
+            pokemon.forms.find((e) => e.name.includes("female")) !== undefined
+          ) {
+            return pokemon.forms.find((e) => e.name.includes("female")).sprites
+              .front_default
+          } else {
+            return pokemon.pokemon.sprites.front_female
+          }
+        } else {
+          return pokemon.pokemon.sprites.front_default
+        }
+      } else {
+        if (
+          pokemon.pokemon.sprites.other.hasOwnProperty("home") &&
+          pokemon.pokemon.sprites.other.home.hasOwnProperty(
+            "front_shiny_female"
+          ) &&
+          pokemon.pokemon.sprites.other.home.front_shiny_female !== null
+        ) {
+          return pokemon.pokemon.sprites.other.home.front_shiny_female
+        } else if (
+          pokemon.pokemon.sprites.other.hasOwnProperty("dream_world") &&
+          pokemon.pokemon.sprites.other.dream_world.hasOwnProperty(
+            "front_shiny_female"
+          ) &&
+          pokemon.pokemon.sprites.other.dream_world.front_shiny_female !== null
+        ) {
+          return pokemon.pokemon.sprites.other.dream_world.front_shiny_female
+        } else if (
+          pokemon.forms.find((e) => e.name.includes("female")) !== undefined
+        ) {
+          return pokemon.forms.find((e) => e.name.includes("female")).sprites
+            .front_shiny
+        } else if (pokemon.pokemon.sprites.front_shiny_female !== null) {
+          return pokemon.pokemon.sprites.front_shiny_female
+        } else {
+          return ""
+        }
+      }
+    }
+  }
+
   if (isError) {
     toast.error(message)
   } else if (isSuccess) {
@@ -625,69 +753,67 @@ function Pokemon() {
         <>
           <Info>
             <Left>
-              <Zoom>
-                <Sprite
-                  src={
-                    currentGender === "" || currentGender === "male"
-                      ? pokemon.pokemon.sprites.other.dream_world
-                          .front_default !== null
-                        ? pokemon.pokemon.sprites.other.dream_world
-                            .front_default
-                        : pokemon.pokemon.sprites.other.home.front_default !==
-                          null
-                        ? pokemon.pokemon.sprites.other.home.front_default
-                        : pokemon.pokemon.sprites.other["official-artwork"] !==
-                          null
-                        ? pokemon.pokemon.sprites.other["official-artwork"]
-                        : pokemon.pokemon.sprites.front_default
-                      : pokemon.pokemon.sprites.other.dream_world
-                          .front_female !== null
-                      ? pokemon.pokemon.sprites.other.dream_world.front_female
-                      : pokemon.pokemon.sprites.other.home.front_female !== null
-                      ? pokemon.pokemon.sprites.other.home.front_female
-                      : pokemon.pokemon.sprites.front_female !== null
-                      ? pokemon.pokemon.sprites.front_female
-                      : pokemon.forms.find((e) => e.name.includes("female")) !==
-                        undefined
-                      ? pokemon.forms.find((e) => e.name.includes("female"))
-                          .sprites.front_default
-                      : ""
-                  }
-                  title={`Sprite of ${
-                    pokemon.pokemonSpecies.names.find(
-                      (e) => e.language.name === currentLanguage
-                    ).name
-                  }`}
-                  alt={`Sprite of ${
-                    pokemon.pokemonSpecies.names.find(
-                      (e) => e.language.name === currentLanguage
-                    ).name
-                  }`}
-                />
-              </Zoom>
+              <LeftContainer>
+                <SecondaryTitle>Base</SecondaryTitle>
+                <Zoom>
+                  <Sprite
+                    src={spriteDecider(false)}
+                    title={`Sprite of ${
+                      pokemon.pokemonSpecies.names.find(
+                        (e) => e.language.name === currentLanguage
+                      ).name
+                    }`}
+                    alt={`Sprite of ${
+                      pokemon.pokemonSpecies.names.find(
+                        (e) => e.language.name === currentLanguage
+                      ).name
+                    }`}
+                  />
+                </Zoom>
+              </LeftContainer>
               {pokemon.pokemonSpecies.has_gender_differences && (
-                <GenderSwitcher>
-                  {pokemon.pokemonSpecies.gender_rate !== 8 && (
-                    <MaleIcon
-                      onClick={() => setCurrentGender("male")}
-                      className={
-                        (currentGender === "" || currentGender === "male") &&
-                        "active"
-                      }
-                    />
-                  )}
-                  {pokemon.pokemonSpecies.gender_rate !== 0 && (
-                    <FemaleIcon
-                      onClick={() => setCurrentGender("female")}
-                      className={
-                        (pokemon.pokemonSpecies.gender_rate === 8 ||
-                          currentGender === "female") &&
-                        "active"
-                      }
-                    />
-                  )}
-                </GenderSwitcher>
+                <LeftContainer className="smaller">
+                  <GenderSwitcher>
+                    {pokemon.pokemonSpecies.gender_rate !== 8 && (
+                      <MaleIcon
+                        onClick={() => setCurrentGender("male")}
+                        className={
+                          (currentGender === "" || currentGender === "male") &&
+                          "active"
+                        }
+                      />
+                    )}
+                    {pokemon.pokemonSpecies.gender_rate !== 0 && (
+                      <FemaleIcon
+                        onClick={() => setCurrentGender("female")}
+                        className={
+                          (pokemon.pokemonSpecies.gender_rate === 8 ||
+                            currentGender === "female") &&
+                          "active"
+                        }
+                      />
+                    )}
+                  </GenderSwitcher>
+                </LeftContainer>
               )}
+              <LeftContainer>
+                <SecondaryTitle>Shiny</SecondaryTitle>
+                <Zoom>
+                  <Sprite
+                    src={spriteDecider(true)}
+                    title={`Sprite of shiny ${
+                      pokemon.pokemonSpecies.names.find(
+                        (e) => e.language.name === currentLanguage
+                      ).name
+                    }`}
+                    alt={`Sprite of shiny ${
+                      pokemon.pokemonSpecies.names.find(
+                        (e) => e.language.name === currentLanguage
+                      ).name
+                    }`}
+                  />
+                </Zoom>
+              </LeftContainer>
             </Left>
             <Right>
               <LanguageSwitch>

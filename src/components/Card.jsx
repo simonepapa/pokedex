@@ -43,9 +43,13 @@ function Card({ pokemon }) {
       <Number>N° {pokemon.id.toString().padStart(3, "0")}</Number>
       <Sprite
         src={
-          pokemon.sprites.other.dream_world.front_default !== null
+          pokemon.sprites.other.home.front_default !== null
+            ? pokemon.sprites.other.home.front_default
+            : pokemon.sprites.other.dream_world.front_default !== null
             ? pokemon.sprites.other.dream_world.front_default
-            : pokemon.sprites.other.home.front_default
+            : pokemon.sprites.other["official-artwork"].front_default !== null
+            ? pokemon.sprites.other["official-artwork"]
+            : pokemon.sprites.front_default
         }
         alt={`Sprite of ${pokemon.species.name}`}
         title={`Sprite of ${pokemon.species.name}`}

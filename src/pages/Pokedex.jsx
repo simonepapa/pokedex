@@ -40,6 +40,7 @@ const Generations = styled.div`
 
   div {
     display: flex;
+    flex-wrap: wrap;
   }
 `
 
