@@ -3,7 +3,6 @@ import styled from "styled-components"
 
 const Navbar = styled.div`
   background-color: #d75050;
-  width: 100vw;
   height: 60px;
 `
 

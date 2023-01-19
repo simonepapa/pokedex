@@ -1,4 +1,6 @@
 import styled from "styled-components"
+import Zoom from "react-medium-image-zoom"
+import "react-medium-image-zoom/dist/styles.css"
 import Type from "./Type"
 
 const Container = styled.div`
@@ -33,21 +35,30 @@ const Sprite = styled.img`
 function AlternativeCard({ pokemon }) {
   return (
     <Container to={`${pokemon.id}`}>
-      <Sprite
-        src={
-          pokemon.sprites.hasOwnProperty('other') && pokemon.sprites.other.dream_world.front_default !== null
-            ? pokemon.sprites.other.dream_world.front_default
-            : pokemon.sprites.hasOwnProperty('other') && pokemon.sprites.other.home.front_default !== null
-            ? pokemon.sprites.other.home.front_default
-            : pokemon.sprites.hasOwnProperty('other') && pokemon.sprites.other["official-artwork"].front_default !== null 
-            ? pokemon.sprites.other["official-artwork"].front_default
-            : pokemon.sprites.front_default
-        }
-        alt={`Sprite of ${pokemon.name}`}
-        title={`Sprite of ${pokemon.name.replace(/-/g, " ").replace(/(^\w|\s\w)/g, m => m.toUpperCase())}`}
-      />
+      <Zoom>
+        <Sprite
+          src={
+            pokemon.sprites.hasOwnProperty("other") &&
+            pokemon.sprites.other.dream_world.front_default !== null
+              ? pokemon.sprites.other.dream_world.front_default
+              : pokemon.sprites.hasOwnProperty("other") &&
+                pokemon.sprites.other.home.front_default !== null
+              ? pokemon.sprites.other.home.front_default
+              : pokemon.sprites.hasOwnProperty("other") &&
+                pokemon.sprites.other["official-artwork"].front_default !== null
+              ? pokemon.sprites.other["official-artwork"].front_default
+              : pokemon.sprites.front_default
+          }
+          alt={`Sprite of ${pokemon.name}`}
+          title={`Sprite of ${pokemon.name
+            .replace(/-/g, " ")
+            .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}`}
+        />
+      </Zoom>
       <Name>
-        {pokemon.name.replace(/-/g, " ").replace(/(^\w|\s\w)/g, m => m.toUpperCase())}
+        {pokemon.name
+          .replace(/-/g, " ")
+          .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}
       </Name>
       <Grid>
         {pokemon.types.map((type) => (

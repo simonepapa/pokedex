@@ -1,7 +1,9 @@
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import { toast } from "react-toastify"
+import Zoom from 'react-medium-image-zoom'
+import 'react-medium-image-zoom/dist/styles.css'
 import { IT, FR, DE, ES, GB, JP, KR } from "country-flag-icons/react/3x2"
 import Spinner from "../components/Spinner"
 import { useGetPokemonByIdQuery } from "../features/api/apiSlice"
@@ -623,39 +625,46 @@ function Pokemon() {
         <>
           <Info>
             <Left>
-              <Sprite
-                src={
-                  currentGender === "" || currentGender === "male"
-                    ? pokemon.pokemon.sprites.other.dream_world
-                        .front_default !== null
-                      ? pokemon.pokemon.sprites.other.dream_world.front_default
-                      : pokemon.pokemon.sprites.other.home.front_default !== null
-                      ? pokemon.pokemon.sprites.other.home.front_default
-                      : pokemon.pokemon.sprites.other["official-artwork"] !== null
-                      ? pokemon.pokemon.sprites.other["official-artwork"]
-                      : pokemon.pokemon.sprites.front_default
-                    : pokemon.pokemon.sprites.other.dream_world.front_female !== null
-                    ? pokemon.pokemon.sprites.other.dream_world.front_female
-                    : pokemon.pokemon.sprites.other.home.front_female !== null
-                    ? pokemon.pokemon.sprites.other.home.front_female
-                    : pokemon.pokemon.sprites.front_female !== null 
-                    ? pokemon.pokemon.sprites.front_female
-                    : pokemon.forms.find(e => e.name.includes("female")) !== undefined
-                    ? pokemon.forms.find(e => e.name.includes("female")).sprites.front_default
-                    : ""
-                    
-                }
-                title={`Sprite of ${
-                  pokemon.pokemonSpecies.names.find(
-                    (e) => e.language.name === currentLanguage
-                  ).name
-                }`}
-                alt={`Sprite of ${
-                  pokemon.pokemonSpecies.names.find(
-                    (e) => e.language.name === currentLanguage
-                  ).name
-                }`}
-              />
+              <Zoom>
+                <Sprite
+                  src={
+                    currentGender === "" || currentGender === "male"
+                      ? pokemon.pokemon.sprites.other.dream_world
+                          .front_default !== null
+                        ? pokemon.pokemon.sprites.other.dream_world
+                            .front_default
+                        : pokemon.pokemon.sprites.other.home.front_default !==
+                          null
+                        ? pokemon.pokemon.sprites.other.home.front_default
+                        : pokemon.pokemon.sprites.other["official-artwork"] !==
+                          null
+                        ? pokemon.pokemon.sprites.other["official-artwork"]
+                        : pokemon.pokemon.sprites.front_default
+                      : pokemon.pokemon.sprites.other.dream_world
+                          .front_female !== null
+                      ? pokemon.pokemon.sprites.other.dream_world.front_female
+                      : pokemon.pokemon.sprites.other.home.front_female !== null
+                      ? pokemon.pokemon.sprites.other.home.front_female
+                      : pokemon.pokemon.sprites.front_female !== null
+                      ? pokemon.pokemon.sprites.front_female
+                      : pokemon.forms.find((e) => e.name.includes("female")) !==
+                        undefined
+                      ? pokemon.forms.find((e) => e.name.includes("female"))
+                          .sprites.front_default
+                      : ""
+                  }
+                  title={`Sprite of ${
+                    pokemon.pokemonSpecies.names.find(
+                      (e) => e.language.name === currentLanguage
+                    ).name
+                  }`}
+                  alt={`Sprite of ${
+                    pokemon.pokemonSpecies.names.find(
+                      (e) => e.language.name === currentLanguage
+                    ).name
+                  }`}
+                />
+              </Zoom>
               {pokemon.pokemonSpecies.has_gender_differences && (
                 <GenderSwitcher>
                   {pokemon.pokemonSpecies.gender_rate !== 8 && (

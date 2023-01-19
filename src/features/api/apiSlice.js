@@ -49,7 +49,7 @@ export const apiSlice = createApi({
               item = await fetchWithBQ(`item/${evolution.evolution_details[i].item.url.slice(31)}`)
             } 
           }
-          const secondStage = {names: secondStagePokemonSpecies.data.names, sprites: secondStagePokemon.data.sprites, types: secondStagePokemon.data.types, evolution_details: {details: evolution.evolution_details, item: item.data}}
+          const secondStage = {number: secondStagePokemon.data.id, names: secondStagePokemonSpecies.data.names, sprites: secondStagePokemon.data.sprites, types: secondStagePokemon.data.types, evolution_details: {details: evolution.evolution_details, item: item.data}}
 
           // Get third stage
           let thirdStage = {}
@@ -63,10 +63,10 @@ export const apiSlice = createApi({
             if (evolution.evolves_to[i].evolution_details[0].item !== null) {
               thirdStageItem = await fetchWithBQ(`item/${evolution.evolves_to[i].evolution_details[0].item.url.slice(31)}`)
             } 
-            thirdStage = {names: pokemonSpecies.data.names, sprites: pokemon.data.sprites, types: pokemon.data.types, evolution_details: {details: evolution.evolves_to[i].evolution_details, item: thirdStageItem.data}}
+            thirdStage = {number: pokemon.data.id, names: pokemonSpecies.data.names, sprites: pokemon.data.sprites, types: pokemon.data.types, evolution_details: {details: evolution.evolves_to[i].evolution_details, item: thirdStageItem.data}}
           }
 
-          evolutions = [...evolutions, {names: firstStagePokemonSpecies.data.names, sprites: firstStagePokemon.data.sprites, types: firstStagePokemon.data.types, secondStage: secondStage, thirdStage: thirdStage }]
+          evolutions = [...evolutions, {number: firstStagePokemon.data.id, names: firstStagePokemonSpecies.data.names, sprites: firstStagePokemon.data.sprites, types: firstStagePokemon.data.types, secondStage: secondStage, thirdStage: thirdStage }]
         }
 
         // Get different forms

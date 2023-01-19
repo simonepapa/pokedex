@@ -96,7 +96,7 @@ const TypeFilters = styled.div`
     border: 0;
     border-radius: 8px;
     padding: 8px;
-    margin: 0 0 0 16px;
+    margin: 0 0 24px 0;
     text-transform: uppercase;
     transition: box-shadow 0.1s linear;
     font-size: 12px;
@@ -121,6 +121,61 @@ const Types = styled.div`
   p:hover {
     cursor: pointer;
     opacity: 1;
+  }
+`
+const TogglerContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 0 0 0 16px;
+`
+
+const Toggler = styled.label`
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+  margin: 0 8px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + span {
+      background-color: #d75050;
+    }
+    &:focus + span {
+      box-shadow: 0 0 1px #d75050;
+    }
+    &:checked + span:before {
+      -webkit-transform: translateX(22px);
+      -ms-transform: translateX(22px);
+      transform: translateX(22px);
+    }
+  }
+
+  span {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.2s;
+    border-radius: 34px;
+
+    &:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.2s;
+      border-radius: 50%;
+    }
   }
 `
 
@@ -188,12 +243,48 @@ function Pokedex() {
       let from = 0
       let to = 0
       while (from < sortedPokemon.length) {
-        // Loop through every type of pokemon (max 2 loops)
-        for (let i = 0; i < sortedPokemon[from].types.length; i++) {
-          // If the type is included in the types array we created before, then put the pokemon in the list's firt position and increase the "to" parameter
-          if (paramsTypes.includes(sortedPokemon[from].types[i].type.name)) {
-            sortedPokemon[to] = sortedPokemon[from]
-            to++
+        // Check if pokemon has at least one of the selected types (OR case) or both the selected types (AND operator)
+        if (
+          searchParams.get("operator") === "or" ||
+          searchParams.get("operator") === null
+        ) {
+          // If the pokemon has only one type check it, else check both types
+          if (sortedPokemon[from].types.length === 1) {
+            if (paramsTypes.includes(sortedPokemon[from].types[0].type.name)) {
+              sortedPokemon[to] = sortedPokemon[from]
+              to++
+            }
+          } else if (sortedPokemon[from].types.length === 2) {
+            if (paramsTypes.includes(sortedPokemon[from].types[0].type.name) || paramsTypes.includes(sortedPokemon[from].types[1].type.name)) {
+              sortedPokemon[to] = sortedPokemon[from]
+              to++
+            }
+          }
+        } else if (searchParams.get("operator") === "and") {
+          // If there's only one parameter selected, then act as a "OR" filter (based on official pokémon website), else act as an "AND" filter
+          if (paramsTypes.length === 1) {
+            if (sortedPokemon[from].types.length === 1) {
+              if (paramsTypes.includes(sortedPokemon[from].types[0].type.name)) {
+                sortedPokemon[to] = sortedPokemon[from]
+                to++
+              }
+            } else if (sortedPokemon[from].types.length === 2) {
+              if (paramsTypes.includes(sortedPokemon[from].types[0].type.name) || paramsTypes.includes(sortedPokemon[from].types[1].type.name)) {
+                sortedPokemon[to] = sortedPokemon[from]
+                to++
+              }
+            }
+          } else if (paramsTypes.length === 2) {
+            // Select the pokémon only if it has at least two types and these types are the same as the selected ones
+            if (sortedPokemon[from].types.length === 2) {
+              if (
+                (paramsTypes.includes(sortedPokemon[from].types[0].type.name) && paramsTypes.includes(sortedPokemon[from].types[1].type.name)) ||
+                (paramsTypes.includes(sortedPokemon[from].types[1].type.name) && paramsTypes.includes(sortedPokemon[from].types[0].type.name))
+              ) {
+                sortedPokemon[to] = sortedPokemon[from]
+                to++
+              }
+            }
           }
         }
         // Increase from parameter
@@ -204,7 +295,7 @@ function Pokedex() {
     }
 
     return sortedPokemon
-  }, [list, searchParams.get("order"), searchParams.get("type")])
+  }, [list, searchParams.get("order"), searchParams.get("type"), searchParams.get("operator")])
 
   const refreshGen = (e) => {
     // When user clicks on a generation number, change the URL parameter
@@ -228,7 +319,7 @@ function Pokedex() {
     e.target.classList.toggle("active")
   }
 
-  const handleTypesFilters = (e) => {
+  const handleTypesFilters = () => {
     const paramsFilters = []
     // Get all the selected types (this will select DOM element)
     const activeFilters = document.querySelectorAll(".type.active")
@@ -240,6 +331,11 @@ function Pokedex() {
     if (activeFilters.length > 0) {
       setSearchParams((searchParams) => {
         searchParams.set("type", paramsFilters)
+        return searchParams
+      })
+      const booleanLogic = document.getElementById("booleanLogic")
+      setSearchParams((searchParams) => {
+        searchParams.set("operator", booleanLogic.checked ? "and" : "or")
         return searchParams
       })
     } else {
@@ -294,7 +390,14 @@ function Pokedex() {
       <TypeFilters>
         <div>
           <h2>Types</h2>
-          <button onClick={handleTypesFilters}>Apply</button>
+          <TogglerContainer>
+            <p>At least one</p>
+            <Toggler>
+              <input id="booleanLogic" type="checkbox" />
+              <span></span>
+            </Toggler>
+            <p>All</p>
+          </TogglerContainer>
         </div>
         <Types>
           <Type
@@ -388,6 +491,7 @@ function Pokedex() {
             className="type inactive"
           />
         </Types>
+        <button onClick={handleTypesFilters}>Apply</button>
       </TypeFilters>
       <Grid>
         {!isFetching ? (
