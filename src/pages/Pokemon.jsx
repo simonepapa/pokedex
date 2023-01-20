@@ -73,6 +73,31 @@ const LeftContainer = styled.div`
   }
 `
 
+const BoxButtons = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin: 24px 0 0 0;
+
+  button {
+    display: block;
+    background-color: #d75050;
+    border: 0;
+    border-radius: 8px;
+    padding: 8px;
+    margin: 0 24px 0 0;
+    text-transform: uppercase;
+    -webkit-transition: box-shadow 0.1s linear;
+    transition: box-shadow 0.1s linear;
+    font-size: 12px;
+  }
+
+  button:hover {
+    cursor: pointer;
+    box-shadow: 1px 2px 5px rgb(0 0 0 / 50%);
+  }
+`
+
 const Right = styled.div`
   flex: 60%;
   max-width: 60%;
@@ -681,6 +706,17 @@ function Pokemon() {
     }
   }
 
+  const addToTeam = () => {
+    const team = JSON.parse(localStorage.getItem("team"))
+    for (let i = 0; i < Object.keys(team).length; i++) {
+      if (Object.keys(team[i+1]).length === 0) {
+        team[i+1] = pokemon.pokemon
+        localStorage.setItem("team", JSON.stringify(team))
+        return
+      }
+    }
+  }
+
   if (isError) {
     toast.error(message)
   } else if (isSuccess) {
@@ -923,6 +959,12 @@ function Pokemon() {
                     />
                   ))}
                 </Types>
+              </div>
+              <div>
+                <BoxButtons>
+                  <button onClick={addToTeam}>Add to My Team</button>
+                  <button>Add to Box</button>
+                </BoxButtons>
               </div>
             </Right>
           </Info>
