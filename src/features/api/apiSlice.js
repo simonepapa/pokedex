@@ -44,7 +44,7 @@ export const apiSlice = createApi({
           for (let i = 0; i < evolution.evolution_details.length; i++) {
             if (evolution.evolution_details[i].held_item !== null) {
               const item = await fetchWithBQ(`item/${evolution.evolution_details[i].held_item.url.slice(31)}`)
-              evolution.evolution_details[i].item = {...evolution.evolution_details[i].item, ...item.data}
+              evolution.evolution_details[i].held_item = {...evolution.evolution_details[i].held_item, ...item.data}
             } 
             if (evolution.evolution_details[i].item !== null) {
               const item = await fetchWithBQ(`item/${evolution.evolution_details[i].item.url.slice(31)}`)
@@ -58,19 +58,21 @@ export const apiSlice = createApi({
           for (let i = 0; i < evolution.evolves_to.length; i++) {
             const pokemon = await fetchWithBQ(`pokemon/${evolution.evolves_to[i].species.url.slice(42)}`)    
             const pokemonSpecies = await fetchWithBQ(`pokemon-species/${evolution.evolves_to[i].species.url.slice(42)}`)   
-            console.log(evolution.evolves_to)
             if (evolution.evolves_to[i].evolution_details[0].held_item !== null) {
               const thirdStageItem = await fetchWithBQ(`item/${evolution.evolves_to[i].evolution_details[0].held_item.url.slice(31)}`)
-              evolution.evolves_to[i].evolution_details[0].item = {...evolution.evolves_to[i].evolution_details[0].item, ...thirdStageItem.data}
+              evolution.evolves_to[i].evolution_details[0].held_item = {...evolution.evolves_to[i].evolution_details[0].held_item, ...thirdStageItem.data}
             } 
             if (evolution.evolves_to[i].evolution_details[0].item !== null) {
               const thirdStageItem = await fetchWithBQ(`item/${evolution.evolves_to[i].evolution_details[0].item.url.slice(31)}`)
               evolution.evolves_to[i].evolution_details[0].item = {...evolution.evolves_to[i].evolution_details[0].item, ...thirdStageItem.data}
             } 
             thirdStage = {number: pokemon.data.id, names: pokemonSpecies.data.names, sprites: pokemon.data.sprites, types: pokemon.data.types, evolution_details: {details: evolution.evolves_to[i].evolution_details}}
+            
+            evolutions = [...evolutions, {number: firstStagePokemon.data.id, names: firstStagePokemonSpecies.data.names, sprites: firstStagePokemon.data.sprites, types: firstStagePokemon.data.types, secondStage: secondStage, thirdStage: thirdStage }]
           }
-
-          evolutions = [...evolutions, {number: firstStagePokemon.data.id, names: firstStagePokemonSpecies.data.names, sprites: firstStagePokemon.data.sprites, types: firstStagePokemon.data.types, secondStage: secondStage, thirdStage: thirdStage }]
+          if (evolution.evolves_to.length === 0) {
+            evolutions = [...evolutions, {number: firstStagePokemon.data.id, names: firstStagePokemonSpecies.data.names, sprites: firstStagePokemon.data.sprites, types: firstStagePokemon.data.types, secondStage: secondStage, thirdStage: thirdStage }]
+          }
         }
 
         // Get different forms

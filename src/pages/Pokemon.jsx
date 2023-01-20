@@ -428,14 +428,17 @@ function Pokemon() {
           if (details.evolution_details.details[i].held_item !== null) {
             output.push(
               <EvolutionBG
-                key={`Trade ${details.evolution_details.details[i].item.name}`}
+                key={`Trade ${details.evolution_details.details[i].held_item.name}`}
                 className="use"
               >
                 <strong>Trade while holding:</strong>
                 <img
-                  src={details.evolution_details.details[i].item.sprites.default}
-                  alt={`Trade while holding ${details.evolution_details.details[i].item.name}`}
-                  title={`Trade while holding ${details.evolution_details.details[i].item.name}`}
+                  src={
+                    details.evolution_details.details[i].held_item.sprites
+                      .default
+                  }
+                  alt={`Trade while holding ${details.evolution_details.details[i].held_item.name}`}
+                  title={`Trade while holding ${details.evolution_details.details[i].held_item.name}`}
                 />
               </EvolutionBG>
             )
@@ -473,15 +476,15 @@ function Pokemon() {
               >
                 <strong>Use:</strong>
                 <img
-                  src={details.evolution_details.details[i].item.sprites.default}
+                  src={
+                    details.evolution_details.details[i].item.sprites.default
+                  }
                   alt={`Use ${details.evolution_details.details[i].item.name}`}
                   title={`Use ${details.evolution_details.details[i].item.name}`}
                 />
               </EvolutionBG>
             )
-          }
-            
-          else output.push(<p key={`Use-${i}`}>Use item</p>)
+          } else output.push(<p key={`Use-${i}`}>Use item</p>)
           break
         case "shed":
           output.push(
@@ -624,112 +627,57 @@ function Pokemon() {
   }
 
   const spriteDecider = (shiny) => {
-    if (currentGender === "male" || currentGender === "") {
-      if (!shiny) {
-        if (pokemon.pokemon.sprites.hasOwnProperty("other")) {
-          if (
-            pokemon.pokemon.sprites.other.hasOwnProperty("home") &&
-            pokemon.pokemon.sprites.other.home.front_default !== null
-          ) {
-            return pokemon.pokemon.sprites.other.home.front_default
-          } else if (
-            pokemon.pokemon.sprites.other.hasOwnProperty("dream_world") &&
-            pokemon.pokemon.sprites.other.dream_world.front_default !== null
-          ) {
-            return pokemon.pokemon.sprites.other.dream_world.front_default
-          } else if (
-            pokemon.pokemon.sprites.other.hasOwnProperty("official-artwork") &&
-            pokemon.pokemon.sprites.other["official-artwork"].front_default !==
-              null
-          ) {
-            return pokemon.pokemon.sprites.other["official-artwork"]
+    let prop = ""
+    // Assign a string value to prop var, as this will be used in associative array form to decide whether to show base or shiny form
+    if (!shiny && (currentGender === "male" || currentGender === "")) {
+      prop = "front_default"
+    } else if (shiny && (currentGender === "male" || currentGender === "")) {
+      prop = "front_shiny"
+    } else if (!shiny && currentGender === "female") {
+      prop = "front_female"
+    } else if (shiny && currentGender === "female") {
+      prop = "front_shiny_female"
+    }
+    // If the prop "other" is defined
+    if (pokemon.pokemon.sprites.other !== undefined) {
+      // If the prop "home" is undefined and not null, return this sprite
+      if (
+        pokemon.pokemon.sprites.other.home[prop] !== undefined &&
+        pokemon.pokemon.sprites.other.home[prop] !== null
+      ) {
+        return pokemon.pokemon.sprites.other.home[prop]
+      } else if (
+        // If the prop "dream_world" is undefined and not null, return this sprite
+        pokemon.pokemon.sprites.other.dream_world[prop] !== undefined &&
+        pokemon.pokemon.sprites.other.dream_world[prop] !== null
+      ) {
+        return pokemon.pokemon.sprites.other.dream_world[prop]
+      } else if (
+        (currentGender === "male" || currentGender === "") &&
+        // If the prop "official-artwork" is undefined and not null AND the selected gender is male, return this sprite (female sprites usually don't have an official artwork for both base and shiny version in the API)
+        pokemon.pokemon.sprites.other["official-artwork"][prop] !== undefined &&
+        pokemon.pokemon.sprites.other["official-artwork"][prop] !== null
+      ) {
+        return pokemon.pokemon.sprites.other["official-artwork"][prop]
+      } else if (
+        currentGender === "female" &&
+        pokemon.forms.find((e) => e.name.includes("female")) !== undefined
+      ) {
+        // If the selected gender is female, then there's a special case, especially for newer pokemon, where the female version is an alternative "form" and is contained in the forms array. If every check fails, use this as a last resort before printing the default sprite
+        return !shiny
+          ? pokemon.forms.find((e) => e.name.includes("female")).sprites
               .front_default
-          }
-        } else {
-          return pokemon.pokemon.sprites.front_default
-        }
+          : pokemon.forms.find((e) => e.name.includes("female")).sprites
+              .front_shiny
       } else {
-        if (pokemon.pokemon.sprites.hasOwnProperty("other")) {
-          if (
-            pokemon.pokemon.sprites.other.hasOwnProperty("home") &&
-            pokemon.pokemon.sprites.other.home.hasOwnProperty("front_shiny") &&
-            pokemon.pokemon.sprites.other.home.front_shiny !== null
-          ) {
-            return pokemon.pokemon.sprites.other.home.front_shiny
-          } else if (
-            pokemon.pokemon.sprites.other.hasOwnProperty("dream_world") &&
-            pokemon.pokemon.sprites.other.dream_world.hasOwnProperty(
-              "front_shiny"
-            ) &&
-            pokemon.pokemon.sprites.other.dream_world.front_shiny !== null
-          ) {
-            return pokemon.pokemon.sprites.other.dream_world.front_shiny
-          } else if (
-            pokemon.pokemon.sprites.other.hasOwnProperty("official-artwork") &&
-            pokemon.pokemon.sprites.other["official-artwork"].hasOwnProperty(
-              "front_shiny"
-            ) &&
-            pokemon.pokemon.sprites.other["official-artwork"].front_shiny !==
-              null
-          ) {
-            return pokemon.pokemon.sprites.other["official-artwork"].front_shiny
-          }
-        } else {
-          return pokemon.pokemon.sprites.front_shiny
-        }
+        // Default sprite
+        return pokemon.pokemon.sprites[prop]
       }
     } else {
-      if (!shiny) {
-        if (pokemon.pokemon.sprites.hasOwnProperty("other")) {
-          if (
-            pokemon.pokemon.sprites.other.hasOwnProperty("home") &&
-            pokemon.pokemon.sprites.other.home.front_female !== null
-          ) {
-            return pokemon.pokemon.sprites.other.home.front_female
-          } else if (
-            pokemon.pokemon.sprites.other.hasOwnProperty("dream_world") &&
-            pokemon.pokemon.sprites.other.dream_world.front_female !== null
-          ) {
-            return pokemon.pokemon.sprites.other.dream_world.front_female
-          } else if (
-            pokemon.forms.find((e) => e.name.includes("female")) !== undefined
-          ) {
-            return pokemon.forms.find((e) => e.name.includes("female")).sprites
-              .front_default
-          } else {
-            return pokemon.pokemon.sprites.front_female
-          }
-        } else {
-          return pokemon.pokemon.sprites.front_default
-        }
-      } else {
-        if (
-          pokemon.pokemon.sprites.other.hasOwnProperty("home") &&
-          pokemon.pokemon.sprites.other.home.hasOwnProperty(
-            "front_shiny_female"
-          ) &&
-          pokemon.pokemon.sprites.other.home.front_shiny_female !== null
-        ) {
-          return pokemon.pokemon.sprites.other.home.front_shiny_female
-        } else if (
-          pokemon.pokemon.sprites.other.hasOwnProperty("dream_world") &&
-          pokemon.pokemon.sprites.other.dream_world.hasOwnProperty(
-            "front_shiny_female"
-          ) &&
-          pokemon.pokemon.sprites.other.dream_world.front_shiny_female !== null
-        ) {
-          return pokemon.pokemon.sprites.other.dream_world.front_shiny_female
-        } else if (
-          pokemon.forms.find((e) => e.name.includes("female")) !== undefined
-        ) {
-          return pokemon.forms.find((e) => e.name.includes("female")).sprites
-            .front_shiny
-        } else if (pokemon.pokemon.sprites.front_shiny_female !== null) {
-          return pokemon.pokemon.sprites.front_shiny_female
-        } else {
-          return ""
-        }
-      }
+      // If there's no "other" prop, then print the default sprite
+      return !shiny
+        ? pokemon.pokemon.sprites.front_default
+        : pokemon.pokemon.sprites.front_shiny
     }
   }
 
@@ -760,12 +708,12 @@ function Pokemon() {
                     src={spriteDecider(false)}
                     title={`Sprite of ${
                       pokemon.pokemonSpecies.names.find(
-                        (e) => e.language.name === currentLanguage
+                        (e) => e.language.name === "en"
                       ).name
                     }`}
                     alt={`Sprite of ${
                       pokemon.pokemonSpecies.names.find(
-                        (e) => e.language.name === currentLanguage
+                        (e) => e.language.name === "en"
                       ).name
                     }`}
                   />
@@ -803,12 +751,12 @@ function Pokemon() {
                     src={spriteDecider(true)}
                     title={`Sprite of shiny ${
                       pokemon.pokemonSpecies.names.find(
-                        (e) => e.language.name === currentLanguage
+                        (e) => e.language.name === "en"
                       ).name
                     }`}
                     alt={`Sprite of shiny ${
                       pokemon.pokemonSpecies.names.find(
-                        (e) => e.language.name === currentLanguage
+                        (e) => e.language.name === "en"
                       ).name
                     }`}
                   />
@@ -857,6 +805,12 @@ function Pokemon() {
                 {
                   pokemon.pokemonSpecies.names.find(
                     (e) => e.language.name === currentLanguage
+                  ) !== undefined 
+                  ? pokemon.pokemonSpecies.names.find(
+                    (e) => e.language.name === currentLanguage
+                  ).name
+                  : pokemon.pokemonSpecies.names.find(
+                    (e) => e.language.name === "en"
                   ).name
                 }
                 , N° {pokemon.pokemon.id.toString().padStart(3, "0")}
@@ -874,6 +828,12 @@ function Pokemon() {
                 {
                   pokemon.pokemonSpecies.flavor_text_entries.find(
                     (e) => e.language.name === currentLanguage
+                  ) !== undefined 
+                  ? pokemon.pokemonSpecies.flavor_text_entries.find(
+                    (e) => e.language.name === currentLanguage
+                  ).flavor_text
+                  : pokemon.pokemonSpecies.flavor_text_entries.find(
+                    (e) => e.language.name === "en"
                   ).flavor_text
                 }
               </Description>

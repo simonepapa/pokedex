@@ -46,19 +46,21 @@ function Evolution({ pokemon, currentLanguage }) {
                 : pokemon.sprites.front_default
             }
             title={`Sprite of ${
-              pokemon.names.find((e) => e.language.name === currentLanguage)
-                .name
+              pokemon.names.find((e) => e.language.name === "en").name
             }`}
             alt={`Sprite of ${
-              pokemon.names.find((e) => e.language.name === currentLanguage)
-                .name
+              pokemon.names.find((e) => e.language.name === "en").name
             }`}
           />
         </Zoom>
       </SpriteContainer>
       <Name>
         {`#${pokemon.number.toString().padStart(3, "0")} ${
-          pokemon.names.find((e) => e.language.name === currentLanguage).name
+          pokemon.names.find((e) => e.language.name === currentLanguage) !==
+          undefined
+            ? pokemon.names.find((e) => e.language.name === currentLanguage)
+                .name
+            : pokemon.names.find((e) => e.language.name === "en").name
         }`}
       </Name>
       <Grid>
