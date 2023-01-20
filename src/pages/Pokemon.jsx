@@ -719,6 +719,24 @@ function Pokemon() {
                   />
                 </Zoom>
               </LeftContainer>
+              <LeftContainer>
+                <SecondaryTitle>Shiny</SecondaryTitle>
+                <Zoom>
+                  <Sprite
+                    src={spriteDecider(true)}
+                    title={`Sprite of shiny ${
+                      pokemon.pokemonSpecies.names.find(
+                        (e) => e.language.name === "en"
+                      ).name
+                    }`}
+                    alt={`Sprite of shiny ${
+                      pokemon.pokemonSpecies.names.find(
+                        (e) => e.language.name === "en"
+                      ).name
+                    }`}
+                  />
+                </Zoom>
+              </LeftContainer>
               {pokemon.pokemonSpecies.has_gender_differences && (
                 <LeftContainer className="smaller">
                   <GenderSwitcher>
@@ -744,24 +762,6 @@ function Pokemon() {
                   </GenderSwitcher>
                 </LeftContainer>
               )}
-              <LeftContainer>
-                <SecondaryTitle>Shiny</SecondaryTitle>
-                <Zoom>
-                  <Sprite
-                    src={spriteDecider(true)}
-                    title={`Sprite of shiny ${
-                      pokemon.pokemonSpecies.names.find(
-                        (e) => e.language.name === "en"
-                      ).name
-                    }`}
-                    alt={`Sprite of shiny ${
-                      pokemon.pokemonSpecies.names.find(
-                        (e) => e.language.name === "en"
-                      ).name
-                    }`}
-                  />
-                </Zoom>
-              </LeftContainer>
             </Left>
             <Right>
               <LanguageSwitch>
@@ -802,17 +802,15 @@ function Pokemon() {
                 />
               </LanguageSwitch>
               <h1>
-                {
-                  pokemon.pokemonSpecies.names.find(
-                    (e) => e.language.name === currentLanguage
-                  ) !== undefined 
+                {pokemon.pokemonSpecies.names.find(
+                  (e) => e.language.name === currentLanguage
+                ) !== undefined
                   ? pokemon.pokemonSpecies.names.find(
-                    (e) => e.language.name === currentLanguage
-                  ).name
+                      (e) => e.language.name === currentLanguage
+                    ).name
                   : pokemon.pokemonSpecies.names.find(
-                    (e) => e.language.name === "en"
-                  ).name
-                }
+                      (e) => e.language.name === "en"
+                    ).name}
                 , N° {pokemon.pokemon.id.toString().padStart(3, "0")}
               </h1>
               <h3>
@@ -825,17 +823,15 @@ function Pokemon() {
                   .slice(37)}
               </h3>
               <Description>
-                {
-                  pokemon.pokemonSpecies.flavor_text_entries.find(
-                    (e) => e.language.name === currentLanguage
-                  ) !== undefined 
+                {pokemon.pokemonSpecies.flavor_text_entries.find(
+                  (e) => e.language.name === currentLanguage
+                ) !== undefined
                   ? pokemon.pokemonSpecies.flavor_text_entries.find(
-                    (e) => e.language.name === currentLanguage
-                  ).flavor_text
+                      (e) => e.language.name === currentLanguage
+                    ).flavor_text
                   : pokemon.pokemonSpecies.flavor_text_entries.find(
-                    (e) => e.language.name === "en"
-                  ).flavor_text
-                }
+                      (e) => e.language.name === "en"
+                    ).flavor_text}
               </Description>
               <Stats>
                 <div>

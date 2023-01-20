@@ -245,46 +245,37 @@ function Pokedex() {
       let to = 0
       while (from < sortedPokemon.length) {
         // Check if pokemon has at least one of the selected types (OR case) or both the selected types (AND operator)
+        // Please note that if there's only one parameter selected then the filter will act as an "OR" (based on official pokemon website)
         if (
           searchParams.get("operator") === "or" ||
-          searchParams.get("operator") === null
+          searchParams.get("operator") === null ||
+          (searchParams.get("operator") === "and" && paramsTypes.length === 1)
         ) {
-          // If the pokemon has only one type check it, else check both types
-          if (sortedPokemon[from].types.length === 1) {
-            if (paramsTypes.includes(sortedPokemon[from].types[0].type.name)) {
-              sortedPokemon[to] = sortedPokemon[from]
-              to++
-            }
-          } else if (sortedPokemon[from].types.length === 2) {
-            if (paramsTypes.includes(sortedPokemon[from].types[0].type.name) || paramsTypes.includes(sortedPokemon[from].types[1].type.name)) {
-              sortedPokemon[to] = sortedPokemon[from]
-              to++
-            }
+          // Check if the pokemon has the type(s) selected. Always check for the first type in types array, as it is always defined, and check that the second type exists before checking if it equals to the selected type(s) (to prevent app crash)
+          if (
+            paramsTypes.includes(sortedPokemon[from].types[0].type.name) ||
+            (sortedPokemon[from].types[1] !== undefined &&
+              paramsTypes.includes(sortedPokemon[from].types[1].type.name))
+          ) {
+            sortedPokemon[to] = sortedPokemon[from]
+            to++
           }
-        } else if (searchParams.get("operator") === "and") {
-          // If there's only one parameter selected, then act as a "OR" filter (based on official pokémon website), else act as an "AND" filter
-          if (paramsTypes.length === 1) {
-            if (sortedPokemon[from].types.length === 1) {
-              if (paramsTypes.includes(sortedPokemon[from].types[0].type.name)) {
-                sortedPokemon[to] = sortedPokemon[from]
-                to++
-              }
-            } else if (sortedPokemon[from].types.length === 2) {
-              if (paramsTypes.includes(sortedPokemon[from].types[0].type.name) || paramsTypes.includes(sortedPokemon[from].types[1].type.name)) {
-                sortedPokemon[to] = sortedPokemon[from]
-                to++
-              }
-            }
-          } else if (paramsTypes.length === 2) {
-            // Select the pokémon only if it has at least two types and these types are the same as the selected ones
-            if (sortedPokemon[from].types.length === 2) {
-              if (
-                (paramsTypes.includes(sortedPokemon[from].types[0].type.name) && paramsTypes.includes(sortedPokemon[from].types[1].type.name)) ||
-                (paramsTypes.includes(sortedPokemon[from].types[1].type.name) && paramsTypes.includes(sortedPokemon[from].types[0].type.name))
-              ) {
-                sortedPokemon[to] = sortedPokemon[from]
-                to++
-              }
+        } else if (
+          searchParams.get("operator") === "and" &&
+          paramsTypes.length === 2
+        ) {
+          // Select the pokémon only if it has at least two types and these types are the same as the selected ones
+          if (sortedPokemon[from].types.length === 2) {
+            if (
+              (paramsTypes.includes(sortedPokemon[from].types[0].type.name) &&
+                sortedPokemon[from].types[1] !== undefined &&
+                paramsTypes.includes(sortedPokemon[from].types[1].type.name)) ||
+              (sortedPokemon[from].types[1] !== undefined &&
+                paramsTypes.includes(sortedPokemon[from].types[1].type.name) &&
+                paramsTypes.includes(sortedPokemon[from].types[0].type.name))
+            ) {
+              sortedPokemon[to] = sortedPokemon[from]
+              to++
             }
           }
         }
@@ -296,7 +287,12 @@ function Pokedex() {
     }
 
     return sortedPokemon
-  }, [list, searchParams.get("order"), searchParams.get("type"), searchParams.get("operator")])
+  }, [
+    list,
+    searchParams.get("order"),
+    searchParams.get("type"),
+    searchParams.get("operator"),
+  ])
 
   const refreshGen = (e) => {
     // When user clicks on a generation number, change the URL parameter
