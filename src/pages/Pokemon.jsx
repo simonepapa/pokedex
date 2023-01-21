@@ -709,12 +709,30 @@ function Pokemon() {
   const addToTeam = () => {
     const team = JSON.parse(localStorage.getItem("team"))
     for (let i = 0; i < Object.keys(team).length; i++) {
-      if (Object.keys(team[i+1]).length === 0) {
-        team[i+1] = pokemon.pokemon
+      console.log(team[i])
+      if (team[i].sprite === "") {
+        team[i].sprite = document.getElementById("baseForm").src
         localStorage.setItem("team", JSON.stringify(team))
+        toast.success("Pokemon successfully added to your team")
         return
       }
     }
+    toast.error("No free space in your team")
+  }
+
+  const addToBox = () => {
+    const boxes = JSON.parse(localStorage.getItem("boxes"))
+    for (let i = 0; i < Object.keys(boxes).length; i++) {
+      for (let j = 0; j < Object.keys(boxes[i]).length; j++) {
+        if (boxes[i][j].sprite === "") {
+          boxes[i][j].sprite = document.getElementById("baseForm").src
+          localStorage.setItem("boxes", JSON.stringify(boxes))
+          toast.success(`Pokemon successfully added to box ${i}`)
+          return
+        }
+      }
+    }
+    toast.error("No free space in your boxes")
   }
 
   if (isError) {
@@ -741,6 +759,7 @@ function Pokemon() {
                 <SecondaryTitle>Base</SecondaryTitle>
                 <Zoom>
                   <Sprite
+                    id="baseForm"
                     src={spriteDecider(false)}
                     title={`Sprite of ${
                       pokemon.pokemonSpecies.names.find(
@@ -963,7 +982,7 @@ function Pokemon() {
               <div>
                 <BoxButtons>
                   <button onClick={addToTeam}>Add to My Team</button>
-                  <button>Add to Box</button>
+                  <button onClick={addToBox}>Add to Box</button>
                 </BoxButtons>
               </div>
             </Right>

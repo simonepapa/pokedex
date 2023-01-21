@@ -16,8 +16,10 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.6.2",
     "react-scripts": "5.0.1",
+    "react-sortablejs": "^6.1.4",
     "react-toastify": "^9.1.1",
     "redux": "^4.2.0",
+    "sortablejs": "^1.15.0",
     "styled-components": "^5.3.6",
     "web-vitals": "^2.1.4"
   },
@@ -44,5 +46,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/sortablejs": "^1.15.0"
   }
 }

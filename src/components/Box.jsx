@@ -1,14 +1,16 @@
+import { useEffect } from "react"
 import styled from "styled-components"
-import { Droppable, Draggable } from "react-beautiful-dnd"
+import Sortable from "sortablejs"
 
 const Container = styled.div`
-  margin: 0 76px;
-  width: fit-content;
-  height: fit-content;
-  display: flex;
-  flex-wrap: wrap;
-  background-color: red;
-  padding: 16px;
+  .grid {
+    margin: 0 76px;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 16px;
+  }
 `
 
 const BoxCell = styled.div`
@@ -25,29 +27,41 @@ const BoxCell = styled.div`
 `
 
 function Box({ number, box }) {
+  useEffect(() => {
+    Sortable.create(document.getElementById("box"), {
+      swap: true,
+      group: "personalStorage",
+      animation: 100,
+      onSort: function updateSwap(event) {
+        if (event.from.id === event.to.id) {
+          const boxItems = Array.from(box)
+
+          const temp = boxItems[event.oldIndex].sprite
+          boxItems[event.oldIndex].sprite = boxItems[event.newIndex].sprite
+          boxItems[event.newIndex].sprite = temp
+
+          const actualBoxes = JSON.parse(localStorage.getItem("boxes"))
+          actualBoxes[number] = boxItems
+          localStorage.setItem("boxes", JSON.stringify(actualBoxes))
+        }
+      },
+    })
+  }, [])
+
   return (
     <>
       <h2>Box {number}</h2>
       <Container>
-        <Droppable droppableId="droppable" horizontal="horizontal">
-          {(provided, snapshot) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              {Object.keys(box).map((key, i) => {
-                return (
-                  <Draggable draggableId={`draggable-${i}`} index={i}>
-                    {(provided, snapshot) => (
-                      <BoxCell
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >{box[key].item}</BoxCell>
-                    )}
-                  </Draggable>
-                )
-              })}
-            </div>
-          )}
-        </Droppable>
+        <div id="box" className="grid">
+          {box &&
+            Object.keys(box).map((key) => {
+              return (
+                <BoxCell key={key}>
+                  <img src={box[key].sprite} />
+                </BoxCell>
+              )
+            })}
+        </div>
       </Container>
     </>
   )
