@@ -1,6 +1,8 @@
 import { useEffect } from "react"
 import styled from "styled-components"
 import Sortable from "sortablejs"
+import { GrStar } from "react-icons/gr"
+import { GiMale, GiFemale } from "react-icons/gi"
 
 const Container = styled.div`
   .grid {
@@ -14,6 +16,7 @@ const Container = styled.div`
 `
 
 const TeamCell = styled.div`
+  position: relative;
   width: 75px;
   height: 75px;
   background-color: rgba(217, 217, 217, 0.5);
@@ -24,6 +27,33 @@ const TeamCell = styled.div`
     width: 75px;
     max-height: 75px;
   }
+`
+
+const ShinyIndicator = styled(GrStar)`
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 12px;
+  height: 12px;
+  fill: #da2928;
+`
+
+const MaleIcon = styled(GiMale)`
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 12px;
+  height: auto;
+  fill: #02a3fe;
+`
+
+const FemaleIcon = styled(GiFemale)`
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 12px;
+  height: auto;
+  fill: #ec49a6;
 `
 
 function Team({ team, number, box }) {
@@ -37,18 +67,17 @@ function Team({ team, number, box }) {
         const teamItems = Array.from(team)
 
         if (event.from.id === event.to.id) {
-          const temp = teamItems[event.oldIndex].sprite
-          teamItems[event.oldIndex].sprite = teamItems[event.newIndex].sprite
-          teamItems[event.newIndex].sprite = temp
-          
+          const temp = teamItems[event.oldIndex]
+          teamItems[event.oldIndex] = teamItems[event.newIndex]
+          teamItems[event.newIndex] = temp
         } else if (event.from.id === "box") {
-          const temp = boxItems[event.oldIndex].sprite
-          boxItems[event.oldIndex].sprite = teamItems[event.newIndex].sprite
-          teamItems[event.newIndex].sprite = temp
+          const temp = boxItems[event.oldIndex]
+          boxItems[event.oldIndex] = teamItems[event.newIndex]
+          teamItems[event.newIndex] = temp
         } else if (event.from.id === "team") {
-          const temp = boxItems[event.newIndex].sprite
-          boxItems[event.newIndex].sprite = teamItems[event.oldIndex].sprite
-          teamItems[event.oldIndex].sprite = temp
+          const temp = boxItems[event.newIndex]
+          boxItems[event.newIndex] = teamItems[event.oldIndex]
+          teamItems[event.oldIndex] = temp
         }
 
         const actualBoxes = JSON.parse(localStorage.getItem("boxes"))
@@ -68,9 +97,13 @@ function Team({ team, number, box }) {
             Object.keys(team).map((key) => {
               return (
                 <TeamCell key={key}>
-                  {team[key].sprite !== "" && (
-                    <img src={team[key].sprite} />
-                  )}
+                  {team[key].gender === "female" ? (
+                    <FemaleIcon />
+                  ) : team[key].gender === "male" ? (
+                    <MaleIcon />
+                  ) : null}
+                  {team[key].sprite !== "" && <img src={team[key].sprite} />}
+                  {team[key].shiny && <ShinyIndicator />}
                 </TeamCell>
               )
             })}

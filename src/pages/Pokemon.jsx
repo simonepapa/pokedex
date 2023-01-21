@@ -706,12 +706,25 @@ function Pokemon() {
     }
   }
 
-  const addToTeam = () => {
+  const addToTeam = (shiny) => {
     const team = JSON.parse(localStorage.getItem("team"))
     for (let i = 0; i < Object.keys(team).length; i++) {
-      console.log(team[i])
       if (team[i].sprite === "") {
-        team[i].sprite = document.getElementById("baseForm").src
+        console.log(currentGender)
+        team[i].sprite = !shiny
+          ? document.getElementById("baseForm").src
+          : document.getElementById("shinyForm").src
+        team[i].shiny = shiny
+        team[i].gender =
+          pokemon.pokemonSpecies.gender_rate === 8
+            ? "female"
+            : pokemon.pokemonSpecies.gender_rate === -1
+            ? "genderless"
+            : pokemon.pokemonSpecies.gender_rate === 0 ||
+              currentGender === "male" ||
+              currentGender === ""
+            ? "male"
+            : currentGender
         localStorage.setItem("team", JSON.stringify(team))
         toast.success("Pokemon successfully added to your team")
         return
@@ -720,12 +733,26 @@ function Pokemon() {
     toast.error("No free space in your team")
   }
 
-  const addToBox = () => {
+  const addToBox = (shiny) => {
     const boxes = JSON.parse(localStorage.getItem("boxes"))
     for (let i = 0; i < Object.keys(boxes).length; i++) {
       for (let j = 0; j < Object.keys(boxes[i]).length; j++) {
         if (boxes[i][j].sprite === "") {
-          boxes[i][j].sprite = document.getElementById("baseForm").src
+          console.log(pokemon)
+          boxes[i][j].sprite = !shiny
+            ? document.getElementById("baseForm").src
+            : document.getElementById("shinyForm").src
+          boxes[i][j].shiny = shiny
+          boxes[i][j].gender =
+            pokemon.pokemonSpecies.gender_rate === 8
+              ? "female"
+              : pokemon.pokemonSpecies.gender_rate === -1
+              ? "genderless"
+              : pokemon.pokemonSpecies.gender_rate === 0 ||
+                currentGender === "male" ||
+                currentGender === ""
+              ? "male"
+              : currentGender
           localStorage.setItem("boxes", JSON.stringify(boxes))
           toast.success(`Pokemon successfully added to box ${i}`)
           return
@@ -773,11 +800,18 @@ function Pokemon() {
                     }`}
                   />
                 </Zoom>
+                <BoxButtons>
+                  <button onClick={() => addToTeam(false)}>
+                    Add to My Team
+                  </button>
+                  <button onClick={() => addToBox(false)}>Add to Box</button>
+                </BoxButtons>
               </LeftContainer>
               <LeftContainer>
                 <SecondaryTitle>Shiny</SecondaryTitle>
                 <Zoom>
                   <Sprite
+                    id="shinyForm"
                     src={spriteDecider(true)}
                     title={`Sprite of shiny ${
                       pokemon.pokemonSpecies.names.find(
@@ -791,6 +825,12 @@ function Pokemon() {
                     }`}
                   />
                 </Zoom>
+                <BoxButtons>
+                  <button onClick={() => addToTeam(true)}>
+                    Add to My Team
+                  </button>
+                  <button onClick={() => addToBox(true)}>Add to Box</button>
+                </BoxButtons>
               </LeftContainer>
               {pokemon.pokemonSpecies.has_gender_differences && (
                 <LeftContainer className="smaller">
@@ -978,12 +1018,6 @@ function Pokemon() {
                     />
                   ))}
                 </Types>
-              </div>
-              <div>
-                <BoxButtons>
-                  <button onClick={addToTeam}>Add to My Team</button>
-                  <button onClick={addToBox}>Add to Box</button>
-                </BoxButtons>
               </div>
             </Right>
           </Info>

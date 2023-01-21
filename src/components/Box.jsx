@@ -1,6 +1,8 @@
 import { useEffect } from "react"
 import styled from "styled-components"
 import Sortable from "sortablejs"
+import { GrStar } from "react-icons/gr"
+import { GiMale, GiFemale } from "react-icons/gi"
 
 const Container = styled.div`
   .grid {
@@ -14,6 +16,7 @@ const Container = styled.div`
 `
 
 const BoxCell = styled.div`
+  position: relative;
   width: 75px;
   height: 75px;
   background-color: rgba(217, 217, 217, 0.5);
@@ -26,6 +29,33 @@ const BoxCell = styled.div`
   }
 `
 
+const ShinyIndicator = styled(GrStar)`
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 12px;
+  height: 12px;
+  fill: #da2928;
+`
+
+const MaleIcon = styled(GiMale)`
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 12px;
+  height: auto;
+  fill: #02a3fe;
+`
+
+const FemaleIcon = styled(GiFemale)`
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 12px;
+  height: auto;
+  fill: #ec49a6;
+`
+
 function Box({ number, box }) {
   useEffect(() => {
     Sortable.create(document.getElementById("box"), {
@@ -36,9 +66,9 @@ function Box({ number, box }) {
         if (event.from.id === event.to.id) {
           const boxItems = Array.from(box)
 
-          const temp = boxItems[event.oldIndex].sprite
-          boxItems[event.oldIndex].sprite = boxItems[event.newIndex].sprite
-          boxItems[event.newIndex].sprite = temp
+          const temp = boxItems[event.oldIndex]
+          boxItems[event.oldIndex] = boxItems[event.newIndex]
+          boxItems[event.newIndex] = temp
 
           const actualBoxes = JSON.parse(localStorage.getItem("boxes"))
           actualBoxes[number] = boxItems
@@ -57,7 +87,13 @@ function Box({ number, box }) {
             Object.keys(box).map((key) => {
               return (
                 <BoxCell key={key}>
-                  <img src={box[key].sprite} />
+                  {box[key].gender === "female" ? (
+                    <FemaleIcon />
+                  ) : box[key].gender === "male" ? (
+                    <MaleIcon />
+                  ) : null}
+                  {box[key].sprite !== "" && <img src={box[key].sprite} />}
+                  {box[key].shiny && <ShinyIndicator />}
                 </BoxCell>
               )
             })}
