@@ -105,3 +105,16 @@ body {
   cursor: pointer;
   opacity: 0.75;
 }
+.cell {
+  position: relative;
+  width: 75px;
+  height: 75px;
+  background-color: rgba(217, 217, 217, 0.5);
+  padding: 8px;
+  margin: 0 16px 16px 0;
+  transition: background-color 0.1s linear;
+}
+
+main {
+  padding-bottom: 32px;
+}

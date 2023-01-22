@@ -710,7 +710,6 @@ function Pokemon() {
     const team = JSON.parse(localStorage.getItem("team"))
     for (let i = 0; i < Object.keys(team).length; i++) {
       if (team[i].sprite === "") {
-        console.log(currentGender)
         team[i].sprite = !shiny
           ? document.getElementById("baseForm").src
           : document.getElementById("shinyForm").src
@@ -725,6 +724,7 @@ function Pokemon() {
               currentGender === ""
             ? "male"
             : currentGender
+        team[i].name = pokemon.pokemon.name
         localStorage.setItem("team", JSON.stringify(team))
         toast.success("Pokemon successfully added to your team")
         return
@@ -735,10 +735,9 @@ function Pokemon() {
 
   const addToBox = (shiny) => {
     const boxes = JSON.parse(localStorage.getItem("boxes"))
-    for (let i = 0; i < Object.keys(boxes).length; i++) {
+    for (let i = 1; i <= Object.keys(boxes).length; i++) {
       for (let j = 0; j < Object.keys(boxes[i]).length; j++) {
         if (boxes[i][j].sprite === "") {
-          console.log(pokemon)
           boxes[i][j].sprite = !shiny
             ? document.getElementById("baseForm").src
             : document.getElementById("shinyForm").src
@@ -753,6 +752,7 @@ function Pokemon() {
                 currentGender === ""
               ? "male"
               : currentGender
+          boxes[i][j].name = pokemon.pokemon.name
           localStorage.setItem("boxes", JSON.stringify(boxes))
           toast.success(`Pokemon successfully added to box ${i}`)
           return

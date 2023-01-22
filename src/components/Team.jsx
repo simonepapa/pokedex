@@ -13,6 +13,10 @@ const Container = styled.div`
     grid-row-gap: 0px;
     padding: 0 76px;
   }
+
+  .highlighted {
+    background-color: rgba(217, 217, 217, 1);
+  }
 `
 
 const TeamCell = styled.div`
@@ -22,6 +26,17 @@ const TeamCell = styled.div`
   background-color: rgba(217, 217, 217, 0.5);
   padding: 8px;
   margin: 0 16px 16px 0;
+  transition: background-color 0.1s linear;
+
+  .cell {
+    position: relative;
+    width: 75px;
+    height: 75px;
+    background-color: rgba(217, 217, 217, 0.5);
+    padding: 8px;
+    margin: 0 16px 16px 0;
+    transition: background-color 0.1s linear;
+  }
 
   img {
     width: 75px;
@@ -60,8 +75,20 @@ function Team({ team, number, box }) {
   useEffect(() => {
     Sortable.create(document.getElementById("team"), {
       swap: true,
+      swapClass: "highlighted",
       group: "personalStorage",
       animation: 100,
+      onRemove: function updateDelete(event) {
+        if (event.to.id === "release") {
+          const teamItems = Array.from(team)
+          teamItems[event.oldIndex] = {
+            sprite: "",
+            shiny: false,
+            gender: "",
+            name: "",
+          }
+        }
+      },
       onSort: function updateSwap(event) {
         const boxItems = Array.from(box)
         const teamItems = Array.from(team)
@@ -70,6 +97,13 @@ function Team({ team, number, box }) {
           const temp = teamItems[event.oldIndex]
           teamItems[event.oldIndex] = teamItems[event.newIndex]
           teamItems[event.newIndex] = temp
+        } else if (event.to.id === "release") {
+          teamItems[event.oldIndex] = {
+            sprite: "",
+            shiny: false,
+            gender: "",
+            name: "",
+          }
         } else if (event.from.id === "box") {
           const temp = boxItems[event.oldIndex]
           boxItems[event.oldIndex] = teamItems[event.newIndex]
@@ -96,7 +130,7 @@ function Team({ team, number, box }) {
           {team &&
             Object.keys(team).map((key) => {
               return (
-                <TeamCell key={key}>
+                <TeamCell key={key} className="cell">
                   {team[key].gender === "female" ? (
                     <FemaleIcon />
                   ) : team[key].gender === "male" ? (

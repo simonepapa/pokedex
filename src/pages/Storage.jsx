@@ -1,8 +1,12 @@
 import { useParams } from "react-router-dom"
 import { useLocalStorage } from "../hooks/useLocalStorage"
 import styled from "styled-components"
+import Sortable, { Swap } from 'sortablejs';
 import Team from "../components/Team"
 import Box from "../components/Box"
+import Release from "../components/Release";
+
+Sortable.mount(new Swap());
 
 const Content = styled.div`
   max-width: 1200px;
@@ -13,6 +17,10 @@ const Content = styled.div`
 
   h2 {
     margin: 36px 0 24px 76px;
+  }
+
+  p {
+    margin: 0 0 0 76px;
   }
 `
 
@@ -25,10 +33,13 @@ function Storage() {
   return (
     <main>
       <Content>
-        {team && <Team team={team} number={params.number - 1} box={box[params.number - 1]} />}
+        <Release />
       </Content>
       <Content>
-        {box && <Box number={params.number - 1} box={box[params.number - 1]} />}
+        {team && <Team team={team} number={params.number} box={box[params.number]} />}
+      </Content>
+      <Content>
+        {box && <Box number={params.number} box={box[params.number]} team={team} />}
       </Content>
     </main>
   )

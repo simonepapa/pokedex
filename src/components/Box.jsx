@@ -13,6 +13,10 @@ const Container = styled.div`
     flex-wrap: wrap;
     padding: 16px;
   }
+
+  .highlighted {
+    background-color: rgba(217, 217, 217, 1);
+  }
 `
 
 const BoxCell = styled.div`
@@ -22,6 +26,7 @@ const BoxCell = styled.div`
   background-color: rgba(217, 217, 217, 0.5);
   padding: 8px;
   margin: 0 16px 16px 0;
+  transition: background-color 0.1s linear;
 
   img {
     width: 75px;
@@ -56,24 +61,42 @@ const FemaleIcon = styled(GiFemale)`
   fill: #ec49a6;
 `
 
-function Box({ number, box }) {
+function Box({ number, box, team }) {
   useEffect(() => {
     Sortable.create(document.getElementById("box"), {
       swap: true,
+      swapClass: "highlighted",
       group: "personalStorage",
       animation: 100,
       onSort: function updateSwap(event) {
-        if (event.from.id === event.to.id) {
-          const boxItems = Array.from(box)
+        const boxItems = Array.from(box)
+        const teamItems = Array.from(team)
 
+        if (event.from.id === event.to.id) {
           const temp = boxItems[event.oldIndex]
           boxItems[event.oldIndex] = boxItems[event.newIndex]
           boxItems[event.newIndex] = temp
-
-          const actualBoxes = JSON.parse(localStorage.getItem("boxes"))
-          actualBoxes[number] = boxItems
-          localStorage.setItem("boxes", JSON.stringify(actualBoxes))
+        } else if (event.to.id === "release") {
+          boxItems[event.oldIndex] = {
+            sprite: "",
+            shiny: false,
+            gender: "",
+            name: "",
+          }
+        } else if (event.from.id === "team") {
+          const temp = boxItems[event.newIndex]
+          boxItems[event.newIndex] = teamItems[event.oldIndex]
+          teamItems[event.oldIndex] = temp
+        } else if (event.from.id === "box") {
+          const temp = boxItems[event.oldIndex]
+          boxItems[event.oldIndex] = teamItems[event.newIndex]
+          teamItems[event.newIndex] = temp
         }
+
+        const actualBoxes = JSON.parse(localStorage.getItem("boxes"))
+        actualBoxes[number] = boxItems
+        localStorage.setItem("boxes", JSON.stringify(actualBoxes))
+        localStorage.setItem("team", JSON.stringify(teamItems))
       },
     })
   }, [])
