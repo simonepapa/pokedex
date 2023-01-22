@@ -83,14 +83,6 @@ function Box({ number, box, team }) {
             gender: "",
             name: "",
           }
-        } else if (event.from.id === "team") {
-          const temp = boxItems[event.newIndex]
-          boxItems[event.newIndex] = teamItems[event.oldIndex]
-          teamItems[event.oldIndex] = temp
-        } else if (event.from.id === "box") {
-          const temp = boxItems[event.oldIndex]
-          boxItems[event.oldIndex] = teamItems[event.newIndex]
-          teamItems[event.newIndex] = temp
         }
 
         const actualBoxes = JSON.parse(localStorage.getItem("boxes"))

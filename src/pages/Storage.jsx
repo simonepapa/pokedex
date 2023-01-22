@@ -33,7 +33,7 @@ function Storage() {
   return (
     <main>
       <Content>
-        <Release />
+        <Release number={params.number} />
       </Content>
       <Content>
         {team && <Team team={team} number={params.number} box={box[params.number]} />}
