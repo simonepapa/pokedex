@@ -69,8 +69,8 @@ function Box({ number, box, team }) {
       group: "personalStorage",
       animation: 100,
       onSort: function updateSwap(event) {
-        const boxItems = Array.from(box)
-        const teamItems = Array.from(team)
+        const boxItems = Array.from(JSON.parse(localStorage.getItem("boxes"))[number])
+        const teamItems = Array.from(JSON.parse(localStorage.getItem("team")))
 
         if (event.from.id === event.to.id) {
           const temp = boxItems[event.oldIndex]
