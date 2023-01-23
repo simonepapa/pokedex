@@ -20,37 +20,64 @@ const SpinnerContainer = styled.div`
 `
 
 const Content = styled.main`
-  max-width: 1200px;
-  width: 95vw;
-  margin: 8px auto 0 auto;
+  width: 90vw;
+  margin: 8px auto 16px auto;
   background-color: #ababab;
-  padding: 16px;
+  padding: 8px;
+
+  @media (min-width: 1200px) {
+    max-width: 1200px;
+    width: 95vw;
+    padding: 16px;
+  }
 `
 
 const SimpleFilters = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  
+  @media (min-width: 1200px) {
+    flex-direction: roW;
+    justify-content: space-between;
+  }
 `
 
 const Generations = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 16px 0 24px 76px;
+  margin: 0 0 0 0;
 
   div {
     display: flex;
     flex-wrap: wrap;
   }
+
+  h2 {
+    margin: 16px 0 8px 0;
+  }
+
+  @media (min-width: 1200px) {
+    margin: 16px 0 24px 76px;
+
+    h2 {
+      margin: 19px 0;
+    }
+  }
 `
 
 const Generation = styled.p`
-  font-size: 18px;
-  margin: 0 16px 0 0;
+  font-size: 14px;
+  margin: 0 8px 8px 0;
   padding: 8px;
   background-color: rgba(217, 217, 217, 0.5);
   transition: background-color 0.1s linear;
   border-radius: 8px;
+
+  @media (min-width: 1200px) {
+    font-size: 18px;
+    margin: 0 16px 0 0;
+  }
 
   &:hover:not(.active) {
     background-color: rgba(217, 217, 217, 0.8);
@@ -65,8 +92,11 @@ const Generation = styled.p`
 const OrderList = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: end;
-  margin: 16px 76px 0 0;
+  margin: 0 0 16px 0;
+
+  h2 {
+    margin: 16px 0 8px 0;
+  }
 
   select {
     background-color: rgba(217, 217, 217, 0.5);
@@ -74,6 +104,21 @@ const OrderList = styled.div`
     border-radius: 8px;
     width: 150px;
     padding: 8px;
+    font-size: 14px;
+  }
+
+  @media (min-width: 1200px) {
+    align-items: end;
+    margin: 16px 76px 0 0;
+
+    h2 {
+      margin: 19px 0;
+    }
+
+    select {
+      width: 150px;
+      font-size: 16px;
+    }
   }
 `
 
@@ -84,7 +129,11 @@ const Grid = styled.div`
 `
 
 const TypeFilters = styled.div`
-  margin: 16px 76px 24px 76px;
+  margin: 0 0 0 0;
+
+  h2 {
+    margin: 0;
+  }
 
   div {
     display: flex;
@@ -107,6 +156,14 @@ const TypeFilters = styled.div`
       box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
     }
   }
+
+  @media (min-width: 1200px) {
+    margin: 16px 76px 24px 76px;
+
+    h2 {
+      margin: 19px 0;
+    }
+  }
 `
 
 const Types = styled.div`
@@ -115,13 +172,20 @@ const Types = styled.div`
   align-items: center;
 
   p {
-    margin: 0 16px 16px 0;
+    margin: 0 8px 16px 0;
     transition: opacity 0.1s linear;
   }
 
   p:hover {
     cursor: pointer;
     opacity: 1;
+  }
+
+  @media (min-width: 1200px) {
+    p {
+      margin: 0 16px 16px 0;
+      transition: opacity 0.1s linear;
+    }
   }
 `
 const TogglerContainer = styled.div`
@@ -133,8 +197,8 @@ const TogglerContainer = styled.div`
 const Toggler = styled.label`
   position: relative;
   display: inline-block;
-  width: 50px;
-  height: 28px;
+  width: 30px;
+  height: 17px;
   margin: 0 8px;
 
   input {
@@ -149,9 +213,9 @@ const Toggler = styled.label`
       box-shadow: 0 0 1px #d75050;
     }
     &:checked + span:before {
-      -webkit-transform: translateX(22px);
-      -ms-transform: translateX(22px);
-      transform: translateX(22px);
+      -webkit-transform: translateX(12px);
+      -ms-transform: translateX(12px);
+      transform: translateX(12px);
     }
   }
 
@@ -169,13 +233,25 @@ const Toggler = styled.label`
     &:before {
       position: absolute;
       content: "";
-      height: 20px;
-      width: 20px;
+      height: 10px;
+      width: 10px;
       left: 4px;
       bottom: 4px;
       background-color: white;
       transition: 0.2s;
       border-radius: 50%;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    width: 50px;
+    height: 28px;
+
+    span {
+      &:before {
+        height: 20px;
+        width: 20px;
+      }
     }
   }
 `

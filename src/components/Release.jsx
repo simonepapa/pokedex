@@ -5,14 +5,15 @@ import Sortable from "sortablejs"
 const Container = styled.div`
   display: flex;
   align-items: center;
+  position: relative;
 
   #release {
     position: relative;
     width: fit-content;
     box-sizing: border-box;
-    height: 91px;
+    height: 68px;
     background-color: rgba(217, 217, 217, 0.5);
-    margin: 0 0 0 76px;
+    margin: 0 0 0 8px;
     padding: 0;
   }
 
@@ -22,8 +23,8 @@ const Container = styled.div`
 
   .cell {
     position: absolute;
-    width: 75px;
-    height: 75px;
+    width: 50px;
+    height: 50px;
     background-color: rgba(217, 217, 217, 0.5);
     padding: 8px;
     margin: 0 16px 16px 0;
@@ -31,7 +32,25 @@ const Container = styled.div`
   }
 
   #released {
-    margin-left: 116px;
+    font-size: 12px;
+    margin-left: 82px;
+  }
+
+  @media (min-width: 1200px) {
+    .cell {
+      width: 75px;
+      height: 75px;
+    }
+
+    #release {
+      height: 91px;
+      margin: 0 0 0 76px;
+    }
+
+    #released {
+      font-size: 16px;
+      margin-left: 116px;
+    }
   }
 `
 
@@ -40,15 +59,29 @@ const Border = styled.div`
   justify-content: center;
   align-items: center;
   position: absolute;
-  width: 87px;
-  height: 87px;
+  width: 62px;
+  height: 62px;
   border: 2px dashed rgba(0, 0, 0, 0.5);
-  margin: 0 0 0 76px;
+  margin: 0 0 0 8px;
+  left: 0;
+  top: 0;
 
   p {
     text-align: center;
     margin: 0 !important;
-    font-size: 12px;
+    font-size: 10px;
+  }
+
+  @media (min-width: 1200px) {
+    width: 87px;
+    height: 87px;
+    margin: 0 0 0 76px;
+    top: 0;
+    left: 0;
+
+    p {
+      font-size: 12px;
+    }
   }
 `
 

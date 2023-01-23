@@ -8,21 +8,28 @@ const Container = styled.div`
   .grid {
     max-width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, 150px);
+    grid-template-columns: repeat(auto-fit, 80px);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
-    padding: 0 76px;
+    padding: 0 8px;
   }
 
   .highlighted {
     background-color: rgba(217, 217, 217, 1);
   }
+
+  @media (min-width: 1200px) {
+    .grid {
+      grid-template-columns: repeat(auto-fit, 150px);
+      padding: 0 76px;
+    }
+  }
 `
 
 const TeamCell = styled.div`
   position: relative;
-  width: 75px;
-  height: 75px;
+  width: 50px;
+  height: 50px;
   background-color: rgba(217, 217, 217, 0.5);
   padding: 8px;
   margin: 0 16px 16px 0;
@@ -30,8 +37,8 @@ const TeamCell = styled.div`
 
   .cell {
     position: relative;
-    width: 75px;
-    height: 75px;
+    width: 50px;
+    height: 50px;
     background-color: rgba(217, 217, 217, 0.5);
     padding: 8px;
     margin: 0 16px 16px 0;
@@ -39,8 +46,23 @@ const TeamCell = styled.div`
   }
 
   img {
+    width: 50px;
+    max-height: 50px;
+  }
+
+  @media (min-width: 1200px) {
     width: 75px;
-    max-height: 75px;
+    height: 75px;
+
+    .cell {
+      width: 75px;
+      height: 75px;
+    }
+
+    img {
+      width: 75px;
+      max-height: 75px;
+    }
   }
 `
 
@@ -90,7 +112,9 @@ function Team({ team, number, box }) {
         }
       },
       onSort: function updateSwap(event) {
-        const boxItems = Array.from(JSON.parse(localStorage.getItem("boxes"))[number])
+        const boxItems = Array.from(
+          JSON.parse(localStorage.getItem("boxes"))[number]
+        )
         const teamItems = Array.from(JSON.parse(localStorage.getItem("team")))
 
         if (event.from.id === event.to.id) {

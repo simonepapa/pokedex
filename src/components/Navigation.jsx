@@ -17,18 +17,33 @@ const Container = styled.div`
 `
 
 const Logo = styled.p`
-  font-size: 24px;
   margin-left: 0;
+  font-size: 12px;
+
+  @media (min-width: 1200px) {
+    font-size: 24px;
+  }
 `
 
-const Links = styled.div``
+const Links = styled.div`
+  margin-right: 16px;
+
+  @media (min-width: 1200px) {
+    margin-right: 0;
+  }
+`
 
 const CustomNavLink = styled(NavLink)`
   text-decoration: none;
   text-transform: uppercase;
   color: #000;
-  font-size: 18px;
-  margin: 0 16px;
+  font-size: 12px;
+  margin: 0 0 0 8px;
+
+  @media (min-width: 1200px) {
+    font-size: 18px;
+    margin: 0 16px;
+  }
 
   &:hover {
     text-decoration: underline;

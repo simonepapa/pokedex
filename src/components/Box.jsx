@@ -1,36 +1,57 @@
+import { Link } from "react-router-dom"
 import { useEffect } from "react"
 import styled from "styled-components"
 import Sortable from "sortablejs"
 import { GrStar } from "react-icons/gr"
 import { GiMale, GiFemale } from "react-icons/gi"
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs"
 
 const Container = styled.div`
   .grid {
-    margin: 0 76px;
+    margin: 0;
     width: fit-content;
     height: fit-content;
     display: flex;
     flex-wrap: wrap;
-    padding: 16px;
+    padding: 16px 8px 0 8px;
+    background-color: var(--${(props) => props.children.props.background});
+    border-radius: 16px;
   }
 
   .highlighted {
     background-color: rgba(217, 217, 217, 1);
   }
+
+  @media (min-width: 1200px) {
+    .grid {
+      margin: 0 76px;
+      padding: 16px;
+    }
+  }
 `
 
 const BoxCell = styled.div`
   position: relative;
-  width: 75px;
-  height: 75px;
+  width: 50px;
+  height: 50px;
   background-color: rgba(217, 217, 217, 0.5);
   padding: 8px;
   margin: 0 16px 16px 0;
   transition: background-color 0.1s linear;
 
   img {
+    width: 50px;
+    max-height: 50px;
+  }
+
+  @media (min-width: 1200px) {
     width: 75px;
-    max-height: 75px;
+    height: 75px;
+
+    img {
+      width: 75px;
+      max-height: 75px;
+    }
   }
 `
 
@@ -61,6 +82,39 @@ const FemaleIcon = styled(GiFemale)`
   fill: #ec49a6;
 `
 
+const BoxTop = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90vw;
+  background-color: var(--${(props) => props.background});
+  margin: 0 auto 8px auto;
+  display: flex;
+  border-radius: 16px;
+
+  @media (min-width: 1200px) {
+    max-width: 1048px;
+
+    h2 {
+      margin: 0 !important;
+    }
+  }
+`
+
+const LeftArrow = styled(BsArrowLeft)`
+  width: 32px;
+  height: auto;
+  margin: 0 0 0 8px;
+  fill: #000;
+`
+
+const RightArrow = styled(BsArrowRight)`
+  width: 32px;
+  height: auto;
+  margin: 0 8px 0 0;
+  fill: #000;
+`
+
 function Box({ number, box, team }) {
   useEffect(() => {
     Sortable.create(document.getElementById("box"), {
@@ -69,7 +123,9 @@ function Box({ number, box, team }) {
       group: "personalStorage",
       animation: 100,
       onSort: function updateSwap(event) {
-        const boxItems = Array.from(JSON.parse(localStorage.getItem("boxes"))[number])
+        const boxItems = Array.from(
+          JSON.parse(localStorage.getItem("boxes"))[number]
+        )
         const teamItems = Array.from(JSON.parse(localStorage.getItem("team")))
 
         if (event.from.id === event.to.id) {
@@ -93,11 +149,51 @@ function Box({ number, box, team }) {
     })
   }, [])
 
+  const handleBg = (number) => {
+    switch (number) {
+      case "1":
+        return "flying"
+        break
+      case "2":
+        return "fire"
+        break
+      case "3":
+        return "water"
+        break
+      case "4":
+        return "electric"
+        break
+      case "5":
+        return "grass"
+        break
+      case "6":
+        return "ice"
+        break
+      case "7":
+        return "fighting"
+        break
+      case "8":
+        return "poison"
+        break
+      default:
+        return "normal"
+        break
+    }
+  }
+
   return (
     <>
-      <h2>Box {number}</h2>
+      <BoxTop background={handleBg(number)}>
+        <Link to={`/storage/${parseInt(number) - 1}`} className={parseInt(number) === 1 ? "disabled" : ""}>
+          <LeftArrow />
+        </Link>
+        <h2>Box {number}</h2>
+        <Link to={`/storage/${parseInt(number) + 1}`} className={parseInt(number) === 8 ? "disabled" : ""}>
+          <RightArrow />
+        </Link>
+      </BoxTop>
       <Container>
-        <div id="box" className="grid">
+        <div background={handleBg(number)} id="box" className="grid">
           {box &&
             Object.keys(box).map((key) => {
               return (

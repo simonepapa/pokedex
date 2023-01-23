@@ -26,21 +26,42 @@ const SpinnerContainer = styled.div`
 `
 
 const Content = styled.main`
-  max-width: 1200px;
-  width: 95vw;
-  margin: 8px auto 0 auto;
+  width: 90vw;
+  margin: 8px auto 16px auto;
   background-color: #ababab;
-  padding: 16px;
+  padding: 8px;
+
+  @media (min-width: 1200px) {
+    max-width: 1200px;
+    width: 95vw;
+    padding: 16px;
+  }
 `
 
 const Info = styled.div`
   display: flex;
+  flex-direction: column;
   width: 95%;
   margin: 0 auto;
+
+  @media (min-width: 1200px) {
+    flex-direction: row;
+  }
 `
 
 const LanguageSwitch = styled.div`
   display: flex;
+  flex-wrap: wrap;
+
+  svg {
+    max-width: 24px;
+  }
+
+  @media (min-width: 1200px) {
+    svg {
+      max-width: 32px;
+    }
+  }
 `
 
 const Left = styled.div`
@@ -48,11 +69,16 @@ const Left = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex: 40%;
-  max-width: 40%;
+  flex: 95%;
+  max-width: 95%;
   margin-right: 8px;
   height: fit-content;
   margin: auto 0;
+
+  @media (min-width: 1200px) {
+    flex: 40%;
+    max-width: 40%;
+  }
 `
 
 const LeftContainer = styled.div`
@@ -76,6 +102,7 @@ const LeftContainer = styled.div`
 const BoxButtons = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 0;
   margin: 24px 0 0 0;
 
@@ -85,34 +112,78 @@ const BoxButtons = styled.div`
     border: 0;
     border-radius: 8px;
     padding: 8px;
-    margin: 0 24px 0 0;
+    margin: 0 8px 0 8px;
     text-transform: uppercase;
     -webkit-transition: box-shadow 0.1s linear;
     transition: box-shadow 0.1s linear;
-    font-size: 12px;
+    font-size: 10px;
   }
 
   button:hover {
     cursor: pointer;
     box-shadow: 1px 2px 5px rgb(0 0 0 / 50%);
   }
+
+  @media (min-width: 1200px) {
+    button {
+      margin: 0 24px 0 0;
+      font-size: 12px;
+    }
+  }
 `
 
 const Right = styled.div`
-  flex: 60%;
-  max-width: 60%;
-  margin-left: 8px;
+  flex: 95%;
+  max-width: 95%;
   background-color: rgba(217, 217, 217, 0.5);
   border-radius: 8px;
   padding: 8px 24px 24px 24px;
+  margin-right: 14px;
   height: fit-content;
+
+  h1 {
+    font-size: 21px;
+  }
+
+  h3 {
+    font-size: 16px;
+    margin: 8px 0;
+  }
+  
+  p {
+    margin: 8px 0;
+  }
+
+  @media (min-width: 1200px) {
+    flex: 60%;
+    max-width: 60%;
+    margin-left: 8px;
+    margin-right: 0;
+
+    h1 {
+      font-size: 32px;
+    }
+
+    h3 {
+      font-size: 18px;
+      margin: 18px 0;
+    }
+
+    p {
+      margin: 18px 0;
+    }
+  }
 `
 
 const Sprite = styled.img`
   max-width: 90%;
   width: auto;
   height: 90%;
-  max-height: 200px;
+  max-height: 120px;
+
+  @media (min-width: 1200px) {
+    max-height: 200px;
+  }
 `
 
 const GenderSwitcher = styled.div`
@@ -130,7 +201,7 @@ const GenderSwitcher = styled.div`
 `
 
 const MaleIcon = styled(GiMale)`
-  width: 32px;
+  width: 20px;
   height: auto;
   margin: 0 16px;
   padding: 8px;
@@ -138,10 +209,14 @@ const MaleIcon = styled(GiMale)`
   border-radius: 8px;
   fill: #02a3fe;
   transition: opacity 0.1s linear;
+
+  @media (min-width: 1200px) {
+    width: 32px;
+  }
 `
 
 const FemaleIcon = styled(GiFemale)`
-  width: 32px;
+  width: 20px;
   height: auto;
   margin: 0 16px;
   padding: 8px;
@@ -149,21 +224,30 @@ const FemaleIcon = styled(GiFemale)`
   border-radius: 8px;
   fill: #ec49a6;
   transition: opacity 0.1s linear;
+
+  @media (min-width: 1200px) {
+    width: 32px;
+  }
 `
 
 const Description = styled.p`
-  font-size: 18px;
+  font-size: 14px;
+
+  @media (min-width: 1200px) {
+    font-size: 18px;
+  }
 `
 
 const Stats = styled.div`
-  max-width: 70%;
+  max-width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, 150px);
+  grid-template-columns: repeat(auto-fit, 90px);
   grid-column-gap: 0px;
   grid-row-gap: 0px;
   background-color: #42adbb80;
   border-radius: 8px;
   padding: 16px;
+  margin-bottom: 16px;
 
   svg {
     width: 24px;
@@ -171,14 +255,32 @@ const Stats = styled.div`
     padding: 0;
     background-color: transparent;
   }
+
+  @media (min-width: 1200px) {
+    max-width: 70%;
+    grid-template-columns: repeat(auto-fit, 150px);
+    margin-bottom: 0;
+  }
 `
 
 const StatName = styled.h3`
   margin: 16px 0 8px 0;
+  
+  font-size: 16px !important;
+
+  @media (min-width: 1200px) {
+    font-size: 18px !important;
+  }
 `
 
 const StatValue = styled.p`
   margin: 0 0 8px 0;
+
+  font-size: 14px !important;
+
+  @media (min-width: 1200px) {
+    font-size: 18px !important;
+  }
 `
 
 const Types = styled.div`
@@ -193,10 +295,20 @@ const Bottom = styled.div`
   margin: 16px auto 0 auto;
   height: fit-content;
   padding: 16px 0;
+
+  @media (min-width: 1200px) {
+    width: 95%;
+    margin: 16px auto 0 auto;
+  }
 `
 
 const SecondaryTitle = styled.h2`
+  font-size: 18px;
   margin: 0 16px;
+
+  @media (min-width: 1200px) {
+    font-size: 24px;
+  }
 `
 
 const Grid = styled.div`
@@ -213,8 +325,13 @@ const SingleStat = styled.div`
 
 const EvolutionRow = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
+  overflow-x: scroll;
+  margin-bottom: 32px;
+
+  @media (min-width: 1200px) {
+    justify-content: center;
+  }
 `
 
 const EvolutionDetails = styled.div`
@@ -248,11 +365,18 @@ const EvolutionBG = styled.div`
 
   p {
     margin: 0;
+    font-size: 14px;
   }
 
   &.use {
     display: flex;
     align-items: center;
+  }
+
+  @media (min-width: 1200px) {
+    p {
+      font-size: 16px;
+    }
   }
 `
 
@@ -262,6 +386,17 @@ const AlternativeForms = styled.div`
   flex-wrap: wrap;
   align-items: center;
   padding: 8px;
+`
+
+const CustomType = styled(Type)`
+  font-size: 10px;
+  padding: 4px 4px;
+  margin: 0 8px 0 0 !important;
+
+  @media (min-width: 1200px) {
+    font-size: 16px;
+    padding: 4px 8px;
+  }
 `
 
 function Pokemon() {
@@ -975,7 +1110,7 @@ function Pokemon() {
                       {ability.ability.name
                         .replace(/-/g, " ")
                         .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}
-                      {ability.is_hidden === true && "(Hidden)"}
+                      {ability.is_hidden === true && " (Hidden)"}
                     </StatValue>
                   ))}
                 </div>
@@ -1012,7 +1147,7 @@ function Pokemon() {
                 <StatName>Types</StatName>
                 <Types>
                   {pokemon.pokemon.types.map((type) => (
-                    <Type
+                    <CustomType
                       key={`${pokemon.pokemon.id} + ${type.type.name}`}
                       type={type.type}
                     />

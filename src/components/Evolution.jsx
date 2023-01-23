@@ -10,18 +10,28 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
 `
+
 const SpriteContainer = styled.div`
   border-radius: 50%;
   width: fit-content;
 `
 const Sprite = styled.img`
   width: 100%;
-  max-height: 100px;
+  max-height: 80px;
   height: 100%;
+
+  @media (min-width: 1200px) {
+    max-height: 100px;
+  }
 `
 
 const Name = styled.h3`
   margin: 0;
+  font-size: 16px;
+
+  @media (min-width: 1200px) {
+    font-size: 18px;
+  }
 `
 
 const Grid = styled.div`

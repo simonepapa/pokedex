@@ -8,20 +8,37 @@ const Container = styled(Link)`
   background: rgba(217, 217, 217, 0.5);
   border-radius: 8px;
   padding: 16px 8px;
-  width: 234px;
+  width: 120px;
   margin: 8px 8px;
+  transition: background 0.1s linear;
+
+  @media (min-width: 1200px) {
+    width: 234px;
+  }
+
+  &:hover {
+    background: rgba(217, 217, 217, 0.75);
+  }
 `
 
 const Number = styled.h3`
   margin: 0;
-  font-size: 21px;
+  font-size: 16px;
   font-weight: 700;
+
+  @media (min-width: 1200px) {
+    font-size: 21px;
+  }
 `
 
 const Name = styled.p`
   margin: 0;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 700;
+
+  @media (min-width: 1200px) {
+    font-size: 18px;
+  }
 `
 
 const Grid = styled.div`
@@ -33,8 +50,22 @@ const Sprite = styled.img`
   display: block;
   max-width: 100%;
   width: auto;
-  height: 182px;
+  height: 90px;
   margin: 8px auto;
+
+  @media (min-width: 1200px) {
+    height: 182px;
+  }
+`
+
+const CustomType = styled(Type)`
+  font-size: 10px;
+  padding: 4px 4px;
+
+  @media (min-width: 1200px) {
+    font-size: 16px;
+    padding: 4px 8px;
+  }
 `
 
 function Card({ pokemon }) {
@@ -59,7 +90,7 @@ function Card({ pokemon }) {
       </Name>
       <Grid>
         {pokemon.types.map((type) => (
-          <Type key={`${pokemon.id} + ${type.type.name}`} type={type.type} />
+          <CustomType key={`${pokemon.id} + ${type.type.name}`} type={type.type} />
         ))}
       </Grid>
     </Container>
