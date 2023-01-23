@@ -253,6 +253,14 @@ const Toggler = styled.label`
         width: 20px;
       }
     }
+
+    input {
+      &:checked + span:before {
+        -webkit-transform: translateX(22px);
+        -ms-transform: translateX(22px);
+        transform: translateX(22px);
+      }
+    }
   }
 `
 
@@ -263,7 +271,6 @@ function Pokedex() {
   const {
     data: list = [],
     isLoading,
-    isSuccess,
     isError,
     isFetching,
     message,
@@ -365,9 +372,7 @@ function Pokedex() {
     return sortedPokemon
   }, [
     list,
-    searchParams.get("order"),
-    searchParams.get("type"),
-    searchParams.get("operator"),
+    searchParams
   ])
 
   const refreshGen = (e) => {
@@ -425,8 +430,6 @@ function Pokedex() {
     )
   } else if (isError) {
     toast.error(message)
-  } else if (isSuccess) {
-    console.log(list)
   }
 
   return (

@@ -6,6 +6,7 @@ import Zoom from "react-medium-image-zoom"
 import "react-medium-image-zoom/dist/styles.css"
 import { IT, FR, DE, ES, GB, JP, KR } from "country-flag-icons/react/3x2"
 import Spinner from "../components/Spinner"
+import ProgressBar from "../components/ProgressBar"
 import { useGetPokemonByIdQuery } from "../features/api/apiSlice"
 import Type from "../components/Type"
 import Evolution from "../components/Evolution"
@@ -326,7 +327,7 @@ const SingleStat = styled.div`
 const EvolutionRow = styled.div`
   display: flex;
   align-items: center;
-  overflow-x: scroll;
+  overflow-x: auto;
   margin-bottom: 32px;
 
   @media (min-width: 1200px) {
@@ -408,12 +409,11 @@ function Pokemon() {
   const {
     data: pokemon = [],
     isLoading,
-    isSuccess,
     isError,
-    isFetching,
     message,
-    refetch,
   } = useGetPokemonByIdQuery(params.pokemon)
+
+  console.log(pokemon)
 
   const evolutionType = (details) => {
     let output = []
@@ -899,8 +899,6 @@ function Pokemon() {
 
   if (isError) {
     toast.error(message)
-  } else if (isSuccess) {
-    console.log(pokemon)
   }
 
   if (isLoading) {
@@ -1166,7 +1164,7 @@ function Pokemon() {
                       {stat.stat.name.charAt(0).toUpperCase() +
                         stat.stat.name.slice(1)}
                     </StatName>
-                    <StatValue>{stat.base_stat}</StatValue>
+                    <ProgressBar value={stat.base_stat} />
                   </SingleStat>
                 )
               })}

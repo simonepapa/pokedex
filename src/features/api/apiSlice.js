@@ -28,7 +28,6 @@ export const apiSlice = createApi({
     getPokemonById: builder.query({
       async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
         let evolutions = []
-        let items = []
         let forms = []
         const pokemon = await fetchWithBQ(`pokemon/${_arg}`)
         const pokemonSpecies = await fetchWithBQ(`pokemon-species/${_arg}`)

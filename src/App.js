@@ -11,6 +11,7 @@ import Navigation from "./components/Navigation"
 import Pokedex from "./pages/Pokedex"
 import Storage from "./pages/Storage"
 import Pokemon from "./pages/Pokemon"
+import Footer from "./components/Footer"
 
 const Container = styled.div`
   max-width: 1200px;
@@ -31,6 +32,7 @@ function App() {
             <Route path="/storage/:number" element={<Storage />} />
           </Routes>
         </Container>
+        <Footer />
       </Router>
       <ToastContainer />
     </div>

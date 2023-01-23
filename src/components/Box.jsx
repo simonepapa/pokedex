@@ -115,7 +115,7 @@ const RightArrow = styled(BsArrowRight)`
   fill: #000;
 `
 
-function Box({ number, box, team }) {
+function Box({ number, box }) {
   useEffect(() => {
     Sortable.create(document.getElementById("box"), {
       swap: true,
@@ -147,64 +147,63 @@ function Box({ number, box, team }) {
         localStorage.setItem("team", JSON.stringify(teamItems))
       },
     })
-  }, [])
+  }, [number])
 
   const handleBg = (number) => {
     switch (number) {
       case "1":
         return "flying"
-        break
       case "2":
         return "fire"
-        break
       case "3":
         return "water"
-        break
       case "4":
-        return "electric"
-        break
+        return "dragon"
       case "5":
         return "grass"
-        break
       case "6":
         return "ice"
-        break
       case "7":
         return "fighting"
-        break
       case "8":
         return "poison"
-        break
       default:
         return "normal"
-        break
     }
   }
 
   return (
     <>
       <BoxTop background={handleBg(number)}>
-        <Link to={`/storage/${parseInt(number) - 1}`} className={parseInt(number) === 1 ? "disabled" : ""}>
+        <Link
+          to={`/storage/${parseInt(number) - 1}`}
+          className={parseInt(number) === 1 ? "disabled" : ""}
+        >
           <LeftArrow />
         </Link>
         <h2>Box {number}</h2>
-        <Link to={`/storage/${parseInt(number) + 1}`} className={parseInt(number) === 8 ? "disabled" : ""}>
+        <Link
+          to={`/storage/${parseInt(number) + 1}`}
+          className={parseInt(number) === 8 ? "disabled" : ""}
+        >
           <RightArrow />
         </Link>
       </BoxTop>
       <Container>
         <div background={handleBg(number)} id="box" className="grid">
-          {box &&
-            Object.keys(box).map((key) => {
+          {box[number] &&
+            Object.keys(box[number]).map((key) => {
               return (
                 <BoxCell key={key}>
-                  {box[key].gender === "female" ? (
+                  {box[number][key].gender === "female" ? (
                     <FemaleIcon />
-                  ) : box[key].gender === "male" ? (
+                  ) : box[number][key].gender === "male" ? (
                     <MaleIcon />
                   ) : null}
-                  {box[key].sprite !== "" && <img src={box[key].sprite} />}
-                  {box[key].shiny && <ShinyIndicator />}
+                  {box[number][key].sprite !== "" && (
+                    <img src={box[number][key].sprite} alt={`Sprite of ${box[number][key].name}`} />
+                  )}
+                  {box[number][key].shiny && <ShinyIndicator />}
                 </BoxCell>
               )
             })}

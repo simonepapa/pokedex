@@ -1,10 +1,11 @@
+import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { useLocalStorage } from "../hooks/useLocalStorage"
 import styled from "styled-components"
 import Sortable, { Swap } from "sortablejs"
 import Team from "../components/Team"
 import Box from "../components/Box"
 import Release from "../components/Release"
+import { getTeam, getBoxes } from "../utils"
 
 Sortable.mount(new Swap())
 
@@ -33,9 +34,13 @@ const Content = styled.div`
 
 function Storage() {
   const params = useParams()
+  const [team, setTeam] = useState(getTeam())
+  const [box, setBox] = useState(getBoxes())
 
-  const [team] = useLocalStorage("team")
-  const [box] = useLocalStorage("boxes")
+  useEffect(() => {
+    setTeam(getTeam())
+    setBox(getBoxes())
+  }, [params.number])
 
   return (
     <main>
@@ -43,14 +48,10 @@ function Storage() {
         <Release number={params.number} />
       </Content>
       <Content>
-        {team && (
-          <Team team={team} number={params.number} box={box[params.number]} />
-        )}
+        <Team number={params.number} team={team} />
       </Content>
       <Content>
-        {box && (
-          <Box number={params.number} box={box[params.number]} team={team} />
-        )}
+        <Box number={params.number} box={box} />
       </Content>
     </main>
   )

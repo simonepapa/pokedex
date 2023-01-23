@@ -93,7 +93,7 @@ const FemaleIcon = styled(GiFemale)`
   fill: #ec49a6;
 `
 
-function Team({ team, number, box }) {
+function Team({ number, team }) {
   useEffect(() => {
     Sortable.create(document.getElementById("team"), {
       swap: true,
@@ -112,9 +112,7 @@ function Team({ team, number, box }) {
         }
       },
       onSort: function updateSwap(event) {
-        const boxItems = Array.from(
-          JSON.parse(localStorage.getItem("boxes"))[number]
-        )
+        const boxItems = Array.from(JSON.parse(localStorage.getItem("boxes"))[number])
         const teamItems = Array.from(JSON.parse(localStorage.getItem("team")))
 
         if (event.from.id === event.to.id) {
@@ -144,7 +142,7 @@ function Team({ team, number, box }) {
         localStorage.setItem("team", JSON.stringify(teamItems))
       },
     })
-  }, [])
+  }, [number, team])
 
   return (
     <>
@@ -160,7 +158,7 @@ function Team({ team, number, box }) {
                   ) : team[key].gender === "male" ? (
                     <MaleIcon />
                   ) : null}
-                  {team[key].sprite !== "" && <img src={team[key].sprite} />}
+                  {team[key].sprite !== "" && <img src={team[key].sprite} alt={`Sprite of ${team[key].name}`} />}
                   {team[key].shiny && <ShinyIndicator />}
                 </TeamCell>
               )
