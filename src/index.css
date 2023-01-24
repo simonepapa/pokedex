@@ -132,3 +132,17 @@ img {
     height: 75px;
   }
 }
+.box-change-enter {
+  opacity: 0;
+}
+.box-change-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+.box-change-exit {
+  opacity: 1;
+}
+.box-change-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}

@@ -61,7 +61,7 @@ function Navigation() {
         <Logo className="font-pokemon">Poké Navigator</Logo>
         <Links>
           <CustomNavLink to="/pokedex">Pokédex</CustomNavLink>
-          <CustomNavLink to="/storage/1">Storage</CustomNavLink>
+          <CustomNavLink to="/storage">Storage</CustomNavLink>
         </Links>
       </Container>
     </Navbar>

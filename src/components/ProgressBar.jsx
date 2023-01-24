@@ -42,7 +42,7 @@ function ProgressBar({ value }) {
       <p>1</p>
       <Container>
         <Progress progress={Math.round((value * 100) / 255)}>
-          <Value>{Math.round((value * 100) / 255)}</Value>
+          <Value>{value}</Value>
         </Progress>
       </Container>
       <p>255</p>

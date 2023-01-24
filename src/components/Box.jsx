@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { NavLink } from "react-router-dom"
 import { useEffect } from "react"
 import styled from "styled-components"
 import Sortable from "sortablejs"
@@ -175,19 +175,19 @@ function Box({ number, box }) {
   return (
     <>
       <BoxTop background={handleBg(number)}>
-        <Link
+        <NavLink
           to={`/storage/${parseInt(number) - 1}`}
           className={parseInt(number) === 1 ? "disabled" : ""}
         >
           <LeftArrow />
-        </Link>
+        </NavLink>
         <h2>Box {number}</h2>
-        <Link
+        <NavLink
           to={`/storage/${parseInt(number) + 1}`}
           className={parseInt(number) === 8 ? "disabled" : ""}
         >
           <RightArrow />
-        </Link>
+        </NavLink>
       </BoxTop>
       <Container>
         <div background={handleBg(number)} id="box" className="grid">
@@ -201,7 +201,10 @@ function Box({ number, box }) {
                     <MaleIcon />
                   ) : null}
                   {box[number][key].sprite !== "" && (
-                    <img src={box[number][key].sprite} alt={`Sprite of ${box[number][key].name}`} />
+                    <img
+                      src={box[number][key].sprite}
+                      alt={`Sprite of ${box[number][key].name}`}
+                    />
                   )}
                   {box[number][key].shiny && <ShinyIndicator />}
                 </BoxCell>

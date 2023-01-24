@@ -95,7 +95,6 @@ function Release({number}) {
       },
       animation: 100,
       onAdd: function releasePokemon(event) {
-        console.log(event)
         var el = event.item
         el.parentNode.removeChild(el)
         const div = document.createElement("div")

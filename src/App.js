@@ -12,6 +12,7 @@ import Pokedex from "./pages/Pokedex"
 import Storage from "./pages/Storage"
 import Pokemon from "./pages/Pokemon"
 import Footer from "./components/Footer"
+import ErrorPage from "./pages/ErrorPage"
 
 const Container = styled.div`
   max-width: 1200px;
@@ -30,6 +31,8 @@ function App() {
             <Route path="/pokedex" element={<Pokedex />} />
             <Route path="/pokedex/:pokemon" element={<Pokemon />} />
             <Route path="/storage/:number" element={<Storage />} />
+            <Route path="/storage/" element={<Navigate replace to="/storage/1" />} />
+            <Route path="*" element={<ErrorPage />} />
           </Routes>
         </Container>
         <Footer />

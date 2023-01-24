@@ -4,6 +4,7 @@ const Container = styled.div`
   background-color: #d75050;
   height: fit-content;
   padding: 8px 0 0 0;
+  margin: 32px 0 0 0;
 
   p {
     font-size: 14px;

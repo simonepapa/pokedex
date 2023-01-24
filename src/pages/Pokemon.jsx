@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { useParams } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { useParams, useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import { toast } from "react-toastify"
 import Zoom from "react-medium-image-zoom"
@@ -150,7 +150,7 @@ const Right = styled.div`
     font-size: 16px;
     margin: 8px 0;
   }
-  
+
   p {
     margin: 8px 0;
   }
@@ -266,7 +266,7 @@ const Stats = styled.div`
 
 const StatName = styled.h3`
   margin: 16px 0 8px 0;
-  
+
   font-size: 16px !important;
 
   @media (min-width: 1200px) {
@@ -405,6 +405,7 @@ function Pokemon() {
   const [currentGender, setCurrentGender] = useState("")
 
   const params = useParams()
+  const navigate = useNavigate()
 
   const {
     data: pokemon = [],
@@ -413,7 +414,11 @@ function Pokemon() {
     message,
   } = useGetPokemonByIdQuery(params.pokemon)
 
-  console.log(pokemon)
+  useEffect(() => {
+    if (params.pokemon > 905) {
+      navigate("/404")
+    }
+  }, [params.pokemon])
 
   const evolutionType = (details) => {
     let output = []
@@ -565,6 +570,36 @@ function Pokemon() {
                       </p>
                     )
                     break
+                  case "held_item":
+                    containers.push(
+                      <div key={`Held item ${i}`} style={{display: "flex", alignItems: "center"}}>
+                        <p>while holding:</p>
+                        <img
+                          src={
+                            details.evolution_details.details[i][prop].sprites
+                              .default
+                          }
+                          alt={`Level up while holding ${details.evolution_details.details[i].held_item.name}`}
+                          title={`Level up while holding ${details.evolution_details.details[i].held_item.name}`}
+                        />
+                      </div>
+                    )
+                    break
+                    case "item":
+                      containers.push(
+                        <div key={`Use item ${i}`} style={{display: "flex", alignItems: "center"}}>
+                          <p>using:</p>
+                          <img
+                            src={
+                              details.evolution_details.details[i][prop].sprites
+                                .default
+                            }
+                            alt={`Level up and use ${details.evolution_details.details[i].item.name}`}
+                            title={`Level up and use ${details.evolution_details.details[i].item.name}`}
+                          />
+                        </div>
+                      )
+                      break
                   default:
                     containers.push(
                       <p key={`Level up ${i + 1}`}>

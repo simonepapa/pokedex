@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import styled from "styled-components"
+import { AnimatePresence, motion } from "framer-motion"
 import Sortable, { Swap } from "sortablejs"
 import Team from "../components/Team"
 import Box from "../components/Box"
@@ -34,10 +35,15 @@ const Content = styled.div`
 
 function Storage() {
   const params = useParams()
+  const navigate = useNavigate()
+
   const [team, setTeam] = useState(getTeam())
   const [box, setBox] = useState(getBoxes())
 
   useEffect(() => {
+    if (params.number > 8) {
+      navigate("/storage/8")
+    }
     setTeam(getTeam())
     setBox(getBoxes())
   }, [params.number])
@@ -51,7 +57,17 @@ function Storage() {
         <Team number={params.number} team={team} />
       </Content>
       <Content>
-        <Box number={params.number} box={box} />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={params.number}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <Box number={params.number} box={box} />
+          </motion.div>
+        </AnimatePresence>
       </Content>
     </main>
   )
