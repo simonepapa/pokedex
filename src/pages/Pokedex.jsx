@@ -278,6 +278,8 @@ function Pokedex() {
     searchParams.get("gen") !== null ? searchParams.get("gen") : "1"
   )
 
+  console.log(list)
+
   const sortedPokemon = useMemo(() => {
     const sortedPokemon = list.slice()
     if (

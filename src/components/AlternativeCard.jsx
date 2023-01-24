@@ -56,7 +56,7 @@ const CustomType = styled(Type)`
 
 function AlternativeCard({ pokemon }) {
   return (
-    <Container to={`${pokemon.id}`}>
+    <Container>
       <Zoom>
         <Sprite
           src={
