@@ -173,8 +173,9 @@ export const apiSlice = createApi({
             ]
           }
         }
-        if (pokemon.data.forms > 1) {
+        if (pokemon.data.forms.length > 1) {
           for await (const form of pokemon.data.forms) {
+            console.log(form)
             const alternative = await fetchWithBQ(
               `pokemon-form/${form.url.slice(39)}`
             )
