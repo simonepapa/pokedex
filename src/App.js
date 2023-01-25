@@ -31,7 +31,10 @@ function App() {
             <Route path="/pokedex" element={<Pokedex />} />
             <Route path="/pokedex/:pokemon" element={<Pokemon />} />
             <Route path="/storage/:number" element={<Storage />} />
-            <Route path="/storage/" element={<Navigate replace to="/storage/1" />} />
+            <Route
+              path="/storage/"
+              element={<Navigate replace to="/storage/1" />}
+            />
             <Route path="*" element={<ErrorPage />} />
           </Routes>
         </Container>

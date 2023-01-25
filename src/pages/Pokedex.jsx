@@ -6,6 +6,7 @@ import Spinner from "../components/Spinner"
 import { useGetPokemonByGenQuery } from "../features/api/apiSlice"
 import Card from "../components/Card"
 import Type from "../components/Type"
+import { BsSearch } from "react-icons/bs"
 
 const SpinnerContainer = styled.div`
   display: flex;
@@ -35,7 +36,7 @@ const Content = styled.main`
 const SimpleFilters = styled.div`
   display: flex;
   flex-direction: column;
-  
+
   @media (min-width: 1200px) {
     flex-direction: roW;
     justify-content: space-between;
@@ -264,6 +265,34 @@ const Toggler = styled.label`
   }
 `
 
+const Search = styled.input`
+  display: block;
+  width: 75%;
+  max-width: 400px;
+  margin: 0 auto 24px auto;
+  border: 0;
+  border-bottom: 1px solid #000;
+  background-color: transparent;
+  font-size: 16px;
+  background: transparent
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E")
+    no-repeat right;
+  padding-right: 24px;
+
+  &:focus {
+    outline: none;
+  }
+
+  @media (min-width: 1200px) {
+    font-size: 18px;
+  }
+`
+
+const SearchIcon = styled(BsSearch)`
+  position: absolute;
+  right: 0;
+`
+
 function Pokedex() {
   const [searchParams, setSearchParams] = useSearchParams()
   const generations = [1, 2, 3, 4, 5, 6, 7, 8]
@@ -280,6 +309,7 @@ function Pokedex() {
 
   const sortedPokemon = useMemo(() => {
     const sortedPokemon = list.slice()
+
     if (
       searchParams.get("order") === "asc" ||
       searchParams.get("order") === null
@@ -369,11 +399,31 @@ function Pokedex() {
       sortedPokemon.length = to
     }
 
+    if (searchParams.get("search") !== null) {
+      let from = 0
+      let to = 0
+      while (from < sortedPokemon.length) {
+        if (
+          sortedPokemon[from].species.name.startsWith(
+            searchParams.get("search")
+          )
+        ) {
+          sortedPokemon[to] = sortedPokemon[from]
+          to++
+        }
+        // Increase from parameter
+        from++
+      }
+      //sortedPokemon.map((pokemon, index) => {
+      //  if (!pokemon.species.name.startsWith(searchParams.get("search"))) {
+      //    sortedPokemon.splice(index, 1)
+      //  }
+      //})
+      sortedPokemon.length = to
+    }
+
     return sortedPokemon
-  }, [
-    list,
-    searchParams
-  ])
+  }, [list, searchParams])
 
   const refreshGen = (e) => {
     // When user clicks on a generation number, change the URL parameter
@@ -389,6 +439,18 @@ function Pokedex() {
       searchParams.set("order", e.target.value)
       return searchParams
     })
+  }
+
+  const handleSearch = (e) => {
+    if (e.target.value === "") {
+      searchParams.delete("search")
+      setSearchParams(searchParams)
+    } else {
+      setSearchParams((searchParams) => {
+        searchParams.set("search", e.target.value)
+        return searchParams
+      })
+    }
   }
 
   const handleTypeClick = (e) => {
@@ -569,6 +631,13 @@ function Pokedex() {
         </Types>
         <button onClick={handleTypesFilters}>Apply</button>
       </TypeFilters>
+      <Search
+        onChange={handleSearch}
+        type="text"
+        id="search"
+        name="search"
+        placeholder="Type to search for a pokémon"
+      />
       <Grid>
         {!isFetching ? (
           <>

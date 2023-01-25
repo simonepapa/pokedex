@@ -175,7 +175,6 @@ export const apiSlice = createApi({
         }
         if (pokemon.data.forms.length > 1) {
           for await (const form of pokemon.data.forms) {
-            console.log(form)
             const alternative = await fetchWithBQ(
               `pokemon-form/${form.url.slice(39)}`
             )
@@ -214,7 +213,8 @@ export const apiSlice = createApi({
             pokemonSpecies: {
               gender_rate: pokemonSpecies.data.gender_rate,
               names: pokemonSpecies.data.names,
-              has_gender_differences: pokemonSpecies.data.has_gender_differences,
+              has_gender_differences:
+                pokemonSpecies.data.has_gender_differences,
               generation: pokemonSpecies.data.generation,
               flavor_text_entries: pokemonSpecies.data.flavor_text_entries,
               genera: pokemonSpecies.data.genera,
