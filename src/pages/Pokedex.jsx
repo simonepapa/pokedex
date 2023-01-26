@@ -6,18 +6,12 @@ import Spinner from "../components/Spinner"
 import { useGetPokemonByGenQuery } from "../features/api/apiSlice"
 import Card from "../components/Card"
 import Type from "../components/Type"
-import { BsSearch } from "react-icons/bs"
 
 const SpinnerContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  left: 0;
-  top: 0;
-  background-color: rgba(0, 0, 0, 0.2);
+  margin-top: 32px;
 `
 
 const Content = styled.main`
@@ -278,6 +272,7 @@ const Search = styled.input`
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E")
     no-repeat right;
   padding-right: 24px;
+  text-decoration: none;
 
   &:focus {
     outline: none;
@@ -286,11 +281,6 @@ const Search = styled.input`
   @media (min-width: 1200px) {
     font-size: 18px;
   }
-`
-
-const SearchIcon = styled(BsSearch)`
-  position: absolute;
-  right: 0;
 `
 
 function Pokedex() {
@@ -404,7 +394,7 @@ function Pokedex() {
       let to = 0
       while (from < sortedPokemon.length) {
         if (
-          sortedPokemon[from].species.name.startsWith(
+          sortedPokemon[from].species.name.toLowerCase().startsWith(
             searchParams.get("search")
           )
         ) {
@@ -447,7 +437,7 @@ function Pokedex() {
       setSearchParams(searchParams)
     } else {
       setSearchParams((searchParams) => {
-        searchParams.set("search", e.target.value)
+        searchParams.set("search", e.target.value.toLowerCase())
         return searchParams
       })
     }
