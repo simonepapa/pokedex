@@ -10,6 +10,7 @@ import ProgressBar from "../components/ProgressBar"
 import Type from "../components/Type"
 import Evolution from "../components/Evolution"
 import AlternativeCard from "../components/AlternativeCard"
+import CustomCollapse from "../components/CustomCollapse"
 import { BsArrowRight } from "react-icons/bs"
 import { GiTrade, GiMale, GiFemale } from "react-icons/gi"
 import { useGetPokemonByIdQuery } from "../features/api/apiSlice"
@@ -400,7 +401,52 @@ const CustomType = styled(Type)`
   }
 `
 
+const Table = styled.div`
+  margin: 16px 16px 0 16px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+
+  h3 {
+    text-align: left;
+    padding: 8px 0 8px 8px;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  }
+`
+
+const Row = styled.div`
+  display: flex;
+  position: relative;
+
+  div:nth-of-type(1) {
+    width: 50px;
+  }
+
+  div:nth-of-type(2) {
+    width: 150px;
+  }
+
+  div:nth-of-type(3) {
+    width: 120px;
+  }
+`
+
+const Header = styled(Row)`
+  text-transform: uppercase;
+  font-weight: 700;
+`
+
+const Column = styled.div`
+  padding: 4px;
+  text-align: left;
+`
+
 function Pokemon() {
+  const [isOpen, setIsOpen] = useState(false)
   const [currentLanguage, setCurrentLanguage] = useState("en")
   const [currentGender, setCurrentGender] = useState("")
 
@@ -572,7 +618,10 @@ function Pokemon() {
                     break
                   case "held_item":
                     containers.push(
-                      <div key={`Held item ${i}`} style={{display: "flex", alignItems: "center"}}>
+                      <div
+                        key={`Held item ${i}`}
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
                         <p>while holding:</p>
                         <img
                           src={
@@ -585,21 +634,24 @@ function Pokemon() {
                       </div>
                     )
                     break
-                    case "item":
-                      containers.push(
-                        <div key={`Use item ${i}`} style={{display: "flex", alignItems: "center"}}>
-                          <p>using:</p>
-                          <img
-                            src={
-                              details.evolution_details.details[i][prop].sprites
-                                .default
-                            }
-                            alt={`Level up and use ${details.evolution_details.details[i].item.name}`}
-                            title={`Level up and use ${details.evolution_details.details[i].item.name}`}
-                          />
-                        </div>
-                      )
-                      break
+                  case "item":
+                    containers.push(
+                      <div
+                        key={`Use item ${i}`}
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
+                        <p>using:</p>
+                        <img
+                          src={
+                            details.evolution_details.details[i][prop].sprites
+                              .default
+                          }
+                          alt={`Level up and use ${details.evolution_details.details[i].item.name}`}
+                          title={`Level up and use ${details.evolution_details.details[i].item.name}`}
+                        />
+                      </div>
+                    )
+                    break
                   default:
                     containers.push(
                       <p key={`Level up ${i + 1}`}>
@@ -1255,6 +1307,49 @@ function Pokemon() {
               </AlternativeForms>
             </Bottom>
           )}
+          <Bottom>
+            <SecondaryTitle>Moves</SecondaryTitle>
+            {Object.keys(pokemon.moves).map((key) => {
+              if (pokemon.moves[key].length > 0) {
+                return (
+                  <Table key={key}>
+                    <h3>
+                      {key
+                        .replace(/-/g, " ")
+                        .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}
+                    </h3>
+                    <Header>
+                      <Column></Column>
+                      <Column>Name</Column>
+                      <Column>Type</Column>
+                    </Header>
+                    {pokemon.moves[key].map((move) => {
+                      return (
+                        <Row key={move.name}>
+                          <Column>
+                            {move.level_learned_at !== 0
+                              ? move.level_learned_at
+                              : ""}
+                          </Column>
+                          <Column>
+                            {move.name
+                              .replace(/-/g, " ")
+                              .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}
+                            <CustomCollapse move={move} currentLanguage={currentLanguage}>
+                              <div>Your content</div>
+                            </CustomCollapse>
+                          </Column>
+                          <Column>
+                            <CustomType type={move.type} />
+                          </Column>
+                        </Row>
+                      )
+                    })}
+                  </Table>
+                )
+              }
+            })}
+          </Bottom>
         </>
       ) : (
         <Spinner />

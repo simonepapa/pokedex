@@ -146,3 +146,15 @@ img {
   opacity: 0;
   transition: opacity 200ms;
 }
+.ReactCollapse--collapse {
+  transition: height 0.2s linear;
+  margin: 16px 0 0 0;
+  background-color: #ababab;
+  border-radius: 8px;
+}
+div:nth-of-type(1).ReactCollapse--collapse {
+  width: fit-content !important;
+}
+.ReactCollapse--collapse div {
+  width: fit-content !important;
+}

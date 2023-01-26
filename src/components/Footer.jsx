@@ -3,12 +3,16 @@ import styled from "styled-components"
 const Container = styled.div`
   background-color: #d75050;
   height: fit-content;
-  padding: 8px 0 0 0;
+  padding: 8px 8px 0 8px;
   margin: 32px 0 0 0;
 
   p {
     font-size: 14px;
     margin: 0 0 8px 0;
+  }
+
+  @media (min-width: 1200px) {
+    padding: 8px 0 0 0;
   }
 `
 

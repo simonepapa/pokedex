@@ -156,6 +156,30 @@ export const apiSlice = createApi({
           }
         }
 
+        // Get moves
+        let moves = {
+          "level-up": [],
+          egg: [],
+          tutor: [],
+          machine: [],
+          "stadium-surfing-pikachu": [],
+          "light-ball-egg": [],
+          "colosseum-purification": [],
+          "xd-shadow": [],
+          "xd-purification": [],
+          "form-change": [],
+          "zygarde-cube": [],
+        }
+        for await (const item of pokemon.data.moves) {
+          const move = await fetchWithBQ(`move/${item.move.url.slice(31)}`)
+          moves[item.version_group_details[0].move_learn_method.name].push({
+            ...move.data,
+            ...{
+              level_learned_at: item.version_group_details[0].level_learned_at,
+            },
+          })
+        }
+
         // Get different forms
         for await (const form of pokemonSpecies.data.varieties) {
           if (!form.is_default) {
@@ -198,6 +222,12 @@ export const apiSlice = createApi({
           return {
             error: pokemonSpecies.error,
           }
+
+        if (moves["level-up"].length > 0) {
+          moves["level-up"].sort(function(a, b) {
+            return a.level_learned_at - b.level_learned_at
+          })
+        }
         return {
           data: {
             pokemon: {
@@ -226,6 +256,7 @@ export const apiSlice = createApi({
             },
             evolutionChain: evolutions,
             forms: forms,
+            moves: moves,
           },
         }
       },
