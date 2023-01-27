@@ -115,6 +115,7 @@ function Team({ number }) {
         }
       },
       onSort: function updateSwap(event) {
+        number = window.location.href.charAt(window.location.href.length-1)
         const boxItems = Array.from(
           JSON.parse(localStorage.getItem("boxes"))[number]
         )
@@ -140,7 +141,7 @@ function Team({ number }) {
           boxItems[event.newIndex] = teamItems[event.oldIndex]
           teamItems[event.oldIndex] = temp
         }
-        
+
         const actualBoxes = JSON.parse(localStorage.getItem("boxes"))
         actualBoxes[number] = boxItems
         localStorage.setItem("boxes", JSON.stringify(actualBoxes))

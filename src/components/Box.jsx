@@ -126,6 +126,7 @@ function Box({ number }) {
       group: "personalStorage",
       animation: 100,
       onSort: function updateSwap(event) {
+        number = window.location.href.charAt(window.location.href.length-1)
         const boxItems = Array.from(
           JSON.parse(localStorage.getItem("boxes"))[number]
         )

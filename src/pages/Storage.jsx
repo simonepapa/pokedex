@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import { AnimatePresence, motion } from "framer-motion"
@@ -6,7 +6,6 @@ import Sortable, { Swap } from "sortablejs"
 import Team from "../components/Team"
 import Box from "../components/Box"
 import Release from "../components/Release"
-import { getTeam, getBoxes } from "../utils"
 
 Sortable.mount(new Swap())
 
@@ -37,18 +36,11 @@ function Storage() {
   const params = useParams()
   const navigate = useNavigate()
 
-  const [team, setTeam] = useState(getTeam())
-  const [box, setBox] = useState(getBoxes())
-
   useEffect(() => {
     if (params.number > 8) {
       navigate("/storage/8")
     }
-    setTeam(getTeam())
-    setBox(getBoxes())
   }, [params.number, navigate])
-
-  console.log(box)
 
   return (
     <main>
