@@ -1,7 +1,5 @@
 import styled from "styled-components"
 
-const Container = styled.div``
-
 const Name = styled.p`
   width: fit-content;
   padding: 4px 8px;

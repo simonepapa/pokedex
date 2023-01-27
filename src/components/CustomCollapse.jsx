@@ -9,9 +9,14 @@ const OpenIcon = styled(BsArrowRightSquare)`
   position: absolute;
   right: 8px;
   transition: transform 0.2s linear;
+  fill: #4f4f4f;
 
   &.open {
     transform: rotate(90deg);
+  }
+
+  &:hover {
+    cursor: pointer;
   }
 `
 
@@ -38,33 +43,38 @@ const Paragraph = styled.p`
 `
 
 function CustomCollapse({ move, currentLanguage }) {
+  console.log(move)
   const [isOpen, setIsOpen] = useState(false)
 
   return (
     <>
-      <OpenIcon className={isOpen ? "open" : ""} onClick={() => setIsOpen(!isOpen)} />
+      <OpenIcon
+        className={isOpen ? "open" : ""}
+        onClick={() => setIsOpen(!isOpen)}
+      />
       <Collapse isOpened={isOpen}>
         <Top>
           <h4>
             Power:<span>{move.power !== null ? move.power : "N/A"}</span>
           </h4>
           <h4>
-            Accuracy:<span>{move.accuracy}</span>
+            Accuracy:<span>{move.accuracy !== null ? move.accuracy : "N/A"}</span>
           </h4>
           <h4>
-            PP:<span>{move.pp}</span>
+            PP:<span>{move.pp !== null ? move.pp : "N/A"}</span>
           </h4>
         </Top>
         <Paragraph>
-          {move.flavor_text_entries.find(
-            (e) => e.language.name === currentLanguage
-          ) !== undefined
+          {move.flavor_text_entries.length > 0
             ? move.flavor_text_entries.find(
                 (e) => e.language.name === currentLanguage
-              ).flavor_text
-            : move.flavor_text_entries.find(
-                (e) => e.language.name === "en"
-              ).flavor_text}
+              ) !== undefined
+              ? move.flavor_text_entries.find(
+                  (e) => e.language.name === currentLanguage
+                ).flavor_text
+              : move.flavor_text_entries.find((e) => e.language.name === "en")
+                  .flavor_text
+            : "No description available"}
         </Paragraph>
       </Collapse>
     </>

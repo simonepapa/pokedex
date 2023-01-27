@@ -1,8 +1,9 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import Sortable from "sortablejs"
 import { GrStar } from "react-icons/gr"
 import { GiMale, GiFemale } from "react-icons/gi"
+import { getTeam } from "../utils"
 
 const Container = styled.div`
   .grid {
@@ -93,7 +94,9 @@ const FemaleIcon = styled(GiFemale)`
   fill: #ec49a6;
 `
 
-function Team({ number, team }) {
+function Team({ number }) {
+  const [team] = useState(getTeam())
+
   useEffect(() => {
     Sortable.create(document.getElementById("team"), {
       swap: true,
@@ -112,7 +115,9 @@ function Team({ number, team }) {
         }
       },
       onSort: function updateSwap(event) {
-        const boxItems = Array.from(JSON.parse(localStorage.getItem("boxes"))[number])
+        const boxItems = Array.from(
+          JSON.parse(localStorage.getItem("boxes"))[number]
+        )
         const teamItems = Array.from(JSON.parse(localStorage.getItem("team")))
 
         if (event.from.id === event.to.id) {
@@ -130,12 +135,12 @@ function Team({ number, team }) {
           const temp = boxItems[event.oldIndex]
           boxItems[event.oldIndex] = teamItems[event.newIndex]
           teamItems[event.newIndex] = temp
-        } else if (event.from.id === "team") {
+        } else if (event.to.id === "box") {
           const temp = boxItems[event.newIndex]
           boxItems[event.newIndex] = teamItems[event.oldIndex]
           teamItems[event.oldIndex] = temp
         }
-
+        
         const actualBoxes = JSON.parse(localStorage.getItem("boxes"))
         actualBoxes[number] = boxItems
         localStorage.setItem("boxes", JSON.stringify(actualBoxes))
@@ -158,7 +163,12 @@ function Team({ number, team }) {
                   ) : team[key].gender === "male" ? (
                     <MaleIcon />
                   ) : null}
-                  {team[key].sprite !== "" && <img src={team[key].sprite} alt={`Sprite of ${team[key].name}`} />}
+                  {team[key].sprite !== "" && (
+                    <img
+                      src={team[key].sprite}
+                      alt={`Sprite of ${team[key].name}`}
+                    />
+                  )}
                   {team[key].shiny && <ShinyIndicator />}
                 </TeamCell>
               )

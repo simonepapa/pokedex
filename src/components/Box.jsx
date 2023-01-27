@@ -1,10 +1,11 @@
 import { NavLink } from "react-router-dom"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import Sortable from "sortablejs"
 import { GrStar } from "react-icons/gr"
 import { GiMale, GiFemale } from "react-icons/gi"
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs"
+import { getBoxes } from "../utils"
 
 const Container = styled.div`
   .grid {
@@ -115,7 +116,9 @@ const RightArrow = styled(BsArrowRight)`
   fill: #000;
 `
 
-function Box({ number, box }) {
+function Box({ number }) {
+  const [box] = useState(getBoxes())
+
   useEffect(() => {
     Sortable.create(document.getElementById("box"), {
       swap: true,
@@ -147,7 +150,7 @@ function Box({ number, box }) {
         localStorage.setItem("team", JSON.stringify(teamItems))
       },
     })
-  }, [number])
+  }, [number, box])
 
   const handleBg = (number) => {
     switch (number) {

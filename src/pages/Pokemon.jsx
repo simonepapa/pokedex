@@ -401,12 +401,20 @@ const CustomType = styled(Type)`
   }
 `
 
+const Tables = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`
+
 const Table = styled.div`
   margin: 16px 16px 0 16px;
   border: 1px solid rgba(0, 0, 0, 0.25);
   border-radius: 8px;
-  width: 100%;
+  width: 90%;
+  height: fit-content;
   max-width: 400px;
+  overflow: hidden;
+  overflow-x: auto;
 
   h3 {
     text-align: left;
@@ -414,8 +422,12 @@ const Table = styled.div`
     margin: 0;
     font-size: 18px;
     font-weight: 700;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
   }
+
+  ${CustomType} {
+    font-size: 14px;
+    padding: 4px;
+ }
 `
 
 const Row = styled.div`
@@ -423,15 +435,29 @@ const Row = styled.div`
   position: relative;
 
   div:nth-of-type(1) {
-    width: 50px;
+    width: 25px;
   }
 
   div:nth-of-type(2) {
-    width: 150px;
+    width: 100px;
   }
 
   div:nth-of-type(3) {
     width: 120px;
+  }
+
+  @media (min-width: 576px) {
+    div:nth-of-type(1) {
+      width: 50px;
+    }
+
+    div:nth-of-type(2) {
+      width: 150px;
+    }
+
+    div:nth-of-type(3) {
+      width: 120px;
+    }
   }
 `
 
@@ -446,7 +472,6 @@ const Column = styled.div`
 `
 
 function Pokemon() {
-  const [isOpen, setIsOpen] = useState(false)
   const [currentLanguage, setCurrentLanguage] = useState("en")
   const [currentGender, setCurrentGender] = useState("")
 
@@ -464,7 +489,7 @@ function Pokemon() {
     if (params.pokemon > 905) {
       navigate("/404")
     }
-  }, [params.pokemon])
+  }, [params.pokemon, navigate])
 
   const evolutionType = (details) => {
     let output = []
@@ -1309,46 +1334,67 @@ function Pokemon() {
           )}
           <Bottom>
             <SecondaryTitle>Moves</SecondaryTitle>
-            {Object.keys(pokemon.moves).map((key) => {
-              if (pokemon.moves[key].length > 0) {
-                return (
-                  <Table key={key}>
-                    <h3>
-                      {key
-                        .replace(/-/g, " ")
-                        .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}
-                    </h3>
-                    <Header>
-                      <Column></Column>
-                      <Column>Name</Column>
-                      <Column>Type</Column>
-                    </Header>
-                    {pokemon.moves[key].map((move) => {
-                      return (
-                        <Row key={move.name}>
-                          <Column>
-                            {move.level_learned_at !== 0
-                              ? move.level_learned_at
-                              : ""}
-                          </Column>
-                          <Column>
-                            {move.name
-                              .replace(/-/g, " ")
-                              .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}
-                            <CustomCollapse move={move} currentLanguage={currentLanguage}>
-                              <div>Your content</div>
-                            </CustomCollapse>
-                          </Column>
-                          <Column>
-                            <CustomType type={move.type} />
-                          </Column>
-                        </Row>
-                      )
-                    })}
-                  </Table>
-                )
-              }
-            })}
+            <Tables>
+              {Object.keys(pokemon.moves).map((key) => {
+                if (pokemon.moves[key].length > 0) {
+                  return (
+                    <Table key={key}>
+                      <h3>
+                        {key
+                          .replace(/-/g, " ")
+                          .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}
+                      </h3>
+                      <Header>
+                        <Column></Column>
+                        <Column>Name</Column>
+                        <Column>Type</Column>
+                      </Header>
+                      {pokemon.moves[key].map((move) => {
+                        return (
+                          <Row key={move.name}>
+                            <Column>
+                              {move.level_learned_at !== 0
+                                ? move.level_learned_at
+                                : ""}
+                            </Column>
+                            <Column>
+                              {move.names.find(
+                                (e) => e.language.name === currentLanguage
+                              ) !== undefined
+                                ? move.names
+                                    .find(
+                                      (e) => e.language.name === currentLanguage
+                                    )
+                                    .name.replace(/-/g, " ")
+                                    .replace(/(^\w|\s\w)/g, (m) =>
+                                      m.toUpperCase()
+                                    )
+                                : move.names
+                                    .find((e) => e.language.name === "en")
+                                    .name.replace(/-/g, " ")
+                                    .replace(/(^\w|\s\w)/g, (m) =>
+                                      m.toUpperCase()
+                                    )}
+                              <CustomCollapse
+                                move={move}
+                                currentLanguage={currentLanguage}
+                              >
+                                <div>Your content</div>
+                              </CustomCollapse>
+                            </Column>
+                            <Column>
+                              <CustomType type={move.type} />
+                            </Column>
+                          </Row>
+                        )
+                      })}
+                    </Table>
+                  )
+                } else {
+                  return ""
+                }
+              })}
+            </Tables>
           </Bottom>
         </>
       ) : (

@@ -46,7 +46,9 @@ function Storage() {
     }
     setTeam(getTeam())
     setBox(getBoxes())
-  }, [params.number])
+  }, [params.number, navigate])
+
+  console.log(box)
 
   return (
     <main>
@@ -54,7 +56,7 @@ function Storage() {
         <Release number={params.number} />
       </Content>
       <Content>
-        <Team number={params.number} team={team} />
+        <Team number={params.number} />
       </Content>
       <Content>
         <AnimatePresence mode="wait">
@@ -65,7 +67,7 @@ function Storage() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
           >
-            <Box number={params.number} box={box} />
+            <Box number={params.number} />
           </motion.div>
         </AnimatePresence>
       </Content>
